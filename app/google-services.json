@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "689483776338",
+    "firebase_url": "https://moody-pocketpsyc.firebaseio.com",
+    "project_id": "moody-pocketpsyc",
+    "storage_bucket": "moody-pocketpsyc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689483776338:android:0a1a623848c3df89",
+        "android_client_info": {
+          "package_name": "lk.sliit.moodypp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "689483776338-2vt1rtvi7j0em0maop3kh44jqh7irtkq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lk.sliit.moodypp",
+            "certificate_hash": "7abf75e7688420e7c98b54d17a2a62e7b5093856"
+          }
+        },
+        {
+          "client_id": "689483776338-ukmd6qppu0jie5ejkvm2fmvbo9hdnku0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbOjqoTH6V5Q5PeZb6FazIggg-DMzQgmU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "689483776338-ukmd6qppu0jie5ejkvm2fmvbo9hdnku0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
