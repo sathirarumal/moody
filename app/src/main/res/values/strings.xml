@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">MOODY(P.P)</string>
+    <string-array name="GenderArray">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Trans gender</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="StatusArray">
+        <item>I take/taken medicine for Depression</item>
+        <item>I take/taken medicine for Anxiety</item>
+        <item>I take/taken medicine for Both</item>
+        <item>I do not know if have Both</item>
+    </string-array>
+
 </resources>

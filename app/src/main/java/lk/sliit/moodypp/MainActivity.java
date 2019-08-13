@@ -143,16 +143,16 @@ public class MainActivity extends AppCompatActivity {
                             updateUI(null);
                         }
 
-                        // ...
                     }
                 });
     }
 
     private void updateUI(FirebaseUser user) {
-        if(user != null){
-            //goBasicQuestionPage();
+        if(user == null){
+                //code when there is no user
         }else {
-
+            Intent intent=new Intent(this,chatBot.class);
+            startActivity(intent);
         }
     }
 
