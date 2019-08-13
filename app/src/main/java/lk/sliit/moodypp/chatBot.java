@@ -88,10 +88,10 @@ public class chatBot extends AppCompatActivity {
         dtr=Double.parseDouble(dtrEdit.getText().toString());
         atr=Double.parseDouble(atrEdit.getText().toString());
 
-        childRef=databaseReferenceExtraDetails.child(userId);
-        childRefDTR=childRef.child("DTR");
+        childRefTR=databaseReferenceExtraDetails.child(userId);
+        childRefDTR=childRefTR.child("DTR");
         childRefDTR.setValue(dtr);
-        childRefATR=childRef.child("ATR");
+        childRefATR=childRefTR.child("ATR");
         childRefATR.setValue(atr);
 
         Toast.makeText(chatBot.this, "ATR,DTR updated",
