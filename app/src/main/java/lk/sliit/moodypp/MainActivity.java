@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void goBasicQuestionPage(){
 
-        Intent intent=new Intent(this,basicQuections.class);
+        Intent intent=new Intent(this,chatBot.class);
         startActivity(intent);
     }
 

@@ -7,7 +7,7 @@
     tools:context=".chatBot">
 
     <EditText
-        android:id="@+id/dtr"
+        android:id="@+id/clname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="258dp"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/atr"
+        android:id="@+id/age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="307dp"
@@ -35,19 +35,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dtr" />
+        app:layout_constraintTop_toBottomOf="@+id/clname" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="53dp"
+        android:layout_marginEnd="56dp"
         android:layout_marginBottom="114dp"
         android:onClick="insertTestResults"
         android:text="add results"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dtr" />
+        app:layout_constraintTop_toBottomOf="@+id/clname" />
 
     <TextView
         android:id="@+id/textView"
@@ -58,9 +58,21 @@
         android:layout_marginBottom="8dp"
         android:text="This is sample chatbot"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/dtr"
+        app:layout_constraintBottom_toTopOf="@+id/clname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="7dp"
+        android:contentDescription="@string/app_name"
+        android:onClick="showPopup"
+        android:src="@drawable/ic_settings_black_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
