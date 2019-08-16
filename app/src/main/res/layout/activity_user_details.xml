@@ -1,88 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swiperefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".userDetails">
 
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <EditText
-            android:id="@+id/dtr"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:background="@color/insertTab"
-            android:ems="10"
-            android:hint="How should I call you"
-            android:inputType="textPersonName" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <View style="@style/Divider"/>
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="8dp"
+                android:text="Basic Details"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/atr"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:background="@color/insertTab"
-            android:ems="10"
-            android:hint="Age"
-            android:inputType="number" />
+            <EditText
+                android:id="@+id/clname"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="@color/insertTab"
+                android:ems="10"
+                android:hint="How should I call you"
+                android:inputType="textPersonName"
+                android:textAlignment="center" />
 
-        <View style="@style/Divider"/>
+            <View style="@style/Divider" />
 
-        <Spinner
-            android:id="@+id/genderspin"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:background="@color/insertTab"
-            android:hint="Gender" />
+            <EditText
+                android:id="@+id/age"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="@color/insertTab"
+                android:ems="10"
+                android:hint="Age"
+                android:inputType="number"
+                android:textAlignment="center" />
 
-        <View style="@style/Divider"/>
+            <View style="@style/Divider" />
 
-        <Spinner
-            android:id="@+id/statusspin"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:background="@color/insertTab"
-            android:hint="Status" />
-        <View style="@style/Divider"/>
+            <Spinner
+                android:id="@+id/genderspin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="@color/insertTab"
+                android:hint="Gender"
+                android:textAlignment="center" />
 
-    </LinearLayout>
+            <View style="@style/Divider" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="47dp"
-        android:layout_marginBottom="79dp"
-        android:onClick="insertBasicData"
-        android:text="Add Details"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <Spinner
+                android:id="@+id/statusspin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="@color/insertTab"
+                android:hint="Status"
+                android:textAlignment="center" />
 
-</android.support.constraint.ConstraintLayout>
+            <View style="@style/Divider" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="8dp"
+                android:text="Extended Details"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/pnumber"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="@color/insertTab"
+                android:ems="10"
+                android:hint="Enter phone number"
+                android:inputType="textPersonName"
+                android:textAlignment="center" />
+
+            <View style="@style/Divider" />
+
+            <EditText
+                android:id="@+id/marriage"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="@color/insertTab"
+                android:ems="10"
+                android:hint="Enter marriage status"
+                android:inputType="textPersonName"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </ScrollView>
+
+
+</android.support.v4.widget.SwipeRefreshLayout>

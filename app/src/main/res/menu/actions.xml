@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/file"
+        android:title="USER" >
+        <!-- "file" submenu -->
+        <menu>
+            <item android:id="@+id/userDetails"
+                android:title="Details"
+                />
+            <item android:id="@+id/notes"
+                android:title="NOTES" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/sos"
+        android:title="SOS">
+    </item>
+    <item
+        android:id="@+id/logout"
+        android:title="LOGOUT">
+    </item>
+
+</menu>

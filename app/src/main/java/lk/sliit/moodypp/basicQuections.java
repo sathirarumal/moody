@@ -50,8 +50,8 @@ public class basicQuections extends AppCompatActivity {
 
         heyText=findViewById(R.id.hiText);
         heading=findViewById(R.id.head);
-        callNameText=findViewById(R.id.dtr);
-        ageText=findViewById(R.id.atr);
+        callNameText=findViewById(R.id.clname);
+        ageText=findViewById(R.id.age);
 
 
         mAuth=FirebaseAuth.getInstance();
@@ -104,12 +104,6 @@ public class basicQuections extends AppCompatActivity {
     }
 
 
-/*  public void signOut(){
-        mAuth.signOut();
-        mGoogleSignInClient.signOut();
-        Intent intent=new Intent(this,MainActivity.class);
-        startActivity(intent);
-    }*/
 
     private void checkFirstLogin(){
 

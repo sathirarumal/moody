@@ -11,9 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".chatBot"></activity>
+        <activity android:name=".Calculate"></activity>
+        <activity android:name=".chatBot" />
         <activity android:name=".userDetails" />
-        <activity android:name=".googleSignIn" />
         <activity android:name=".basicQuections" />
         <activity android:name=".MainActivity">
             <intent-filter>

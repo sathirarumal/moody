@@ -1,8 +1,9 @@
 package lk.sliit.moodypp;
 
-import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -22,7 +23,7 @@ public class userDetails extends AppCompatActivity {
     public FirebaseDatabase firebaseDatabase;
     public DatabaseReference databaseReference;
     public DatabaseReference childRef;
-    private static final String TAG=MainActivity.class.getSimpleName();
+    private static final String TAG=userDetails.class.getSimpleName();
     private String email;
     private String callName;
     private String age;
@@ -36,13 +37,14 @@ public class userDetails extends AppCompatActivity {
     private EditText ageText;
     private ArrayAdapter<CharSequence> adapter;
     private ArrayAdapter<CharSequence> adapter2;
+    private SwipeRefreshLayout mySwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         firebaseDatabase=FirebaseDatabase.getInstance();
         databaseReference=firebaseDatabase.getReference("Users");
@@ -55,8 +57,8 @@ public class userDetails extends AppCompatActivity {
 
         childRef=databaseReference.child(userId);
 
-        callNameText=findViewById(R.id.dtr);
-        ageText=findViewById(R.id.atr);
+        callNameText=findViewById(R.id.clname);
+        ageText=findViewById(R.id.age);
 
         // gender spinner
         genderSpinner = (Spinner) findViewById(R.id.genderspin);
@@ -69,6 +71,31 @@ public class userDetails extends AppCompatActivity {
         adapter2 = ArrayAdapter.createFromResource(this, R.array.StatusArray, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(adapter2);
+
+        mySwipeRefreshLayout = findViewById(R.id.swiperefresh);
+        mySwipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+
+                        callName=callNameText.getText().toString();
+                        age=ageText.getText().toString();
+                        status=statusSpinner.getSelectedItem().toString();
+                        gender=genderSpinner.getSelectedItem().toString();
+
+                        user userObj=new user(email,callName,age,gender,status);
+
+                        childRef=databaseReference.child(userId);
+                        childRef.setValue(userObj);
+
+                        Toast.makeText(userDetails.this, "All Details updated",
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                        startActivity(getIntent());
+                    }
+                }
+        );
     }
 
     @Override
@@ -77,6 +104,7 @@ public class userDetails extends AppCompatActivity {
         childRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 user userObj=dataSnapshot.getValue(user.class);
 
                 callNameText.setText(userObj.getCallName());
@@ -113,6 +141,7 @@ public class userDetails extends AppCompatActivity {
         finish();
         startActivity(getIntent());
     }
+
 
 
 
