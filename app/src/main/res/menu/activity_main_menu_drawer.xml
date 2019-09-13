@@ -7,28 +7,28 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/dep"
-            android:icon="@drawable/depressionicon"
+            android:icon="@drawable/dep"
             android:title="@string/dep"
                                                 />
         <item
             android:id="@+id/anx"
-            android:icon="@drawable/anxietyicon"
+            android:icon="@drawable/anx"
             android:title="@string/anx" />
         <item
             android:id="@+id/rel"
-            android:icon="@drawable/relaxicon"
+            android:icon="@drawable/rel"
             android:title="@string/rel" />
         <item
             android:id="@+id/set"
-            android:icon="@drawable/ic_settings_black_24dp"
+            android:icon="@drawable/seti"
             android:title="@string/set" />
     </group>
 
-    <item android:title="For your own security">
+    <item android:title="For your own safety">
         <menu>
             <item
                 android:id="@+id/sout"
-                android:icon="@drawable/outsign"
+                android:icon="@drawable/sout"
                 android:title="@string/sout" />
         </menu>
     </item>

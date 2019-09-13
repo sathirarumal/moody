@@ -18,7 +18,7 @@
     <string name="title_activity_main_menu" tools:ignore="ExtraTranslation">MainMenu</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">MOODY - your personal psychiatrist</string>
+    <string name="nav_header_title">MOODY : Pocket Psychiatrist</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
