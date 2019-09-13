@@ -19,6 +19,7 @@
         <activity android:name=".Calculate" />
         <activity android:name=".CheckUser" />
         <activity android:name=".basicQuections" />
+        <activity android:name=".BotActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

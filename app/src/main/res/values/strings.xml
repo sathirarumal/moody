@@ -14,6 +14,7 @@
         <item>I do not know if have Both</item>
     </string-array>
 
+
     <string name="title_activity_main_menu" tools:ignore="ExtraTranslation">MainMenu</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -26,5 +27,19 @@
     <string name="rel">Relaxation Unit</string>
     <string name="set">Settings</string>
     <string name="sout">Sign Out</string>
+
+    <string-array name= "replyArray">
+        <item> Not at all </item>
+        <item> Several days </item>
+        <item> More than half of the days </item>
+        <item> Nearly everyday </item>
+
+    </string-array>
+
+    <string-array name= "chooseArray">
+        <item> Listen Relaxing Music  </item>
+        <item> Read Positive Thinking Quotes </item>
+
+    </string-array>
 
 </resources>
