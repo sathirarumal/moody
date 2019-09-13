@@ -5,4 +5,6 @@
     <color name="colorAccent">#D81B60</color>
     <color name="themeColor">#9DE8A1</color>
     <color name="insertTab">#e1ecf0</color>
+    <color name ="colorBot"> #B7F0F1 </color>
+    <color name="colorUser"> #99D5A8 </color>
 </resources>

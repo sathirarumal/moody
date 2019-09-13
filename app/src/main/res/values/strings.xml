@@ -14,4 +14,18 @@
         <item>I do not know if have Both</item>
     </string-array>
 
+    <string-array name= "replyArray">
+        <item> Not at all </item>
+        <item> Several days </item>
+        <item> More than half of the days </item>
+        <item> Nearly everyday </item>
+
+    </string-array>
+
+    <string-array name= "chooseArray">
+        <item> Listen Relaxing Music  </item>
+        <item> Read Positive Thinking Quotes </item>
+
+    </string-array>
+
 </resources>

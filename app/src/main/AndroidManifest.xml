@@ -15,6 +15,7 @@
         <activity android:name=".chatBot" />
         <activity android:name=".userDetails" />
         <activity android:name=".basicQuections" />
+        <activity android:name=".BotActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
