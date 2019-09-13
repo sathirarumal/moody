@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
 
     // Dialogflow SDK dependencies
-    implementation 'ai.api:sdk:2.0.7@aar'
+    //implementation 'ai.api:sdk:2.0.7@aar'
     implementation 'ai.api:libai:1.6.12'
 
     // Java V2
