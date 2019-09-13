@@ -2,9 +2,13 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#FFFFFF</color>
     <color name="themeColor">#9DE8A1</color>
     <color name="insertTab">#e1ecf0</color>
+    <color name="navBar">#714DB3</color>
+    <color name="navBarText">#EDF1F3</color>
+    <color name="navBaritem">#373A3A</color>
     <color name ="colorBot"> #B7F0F1 </color>
     <color name="colorUser"> #99D5A8 </color>
+
 </resources>

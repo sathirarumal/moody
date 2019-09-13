@@ -94,7 +94,7 @@ public class basicQuections extends AppCompatActivity {
         childRef=databaseReference.child(userId);
         childRef.setValue(userObj);
 
-        Intent intent=new Intent(this,chatBot.class);
+        Intent intent=new Intent(this, CheckUser.class);
         startActivity(intent);
     }
 
