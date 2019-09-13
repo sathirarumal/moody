@@ -1,7 +1,6 @@
 package lk.sliit.moodypp;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,10 +23,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.gson.Gson;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -151,14 +146,14 @@ public class MainActivity extends AppCompatActivity {
         if(user == null){
                 //code when there is no user
         }else {
-            Intent intent=new Intent(this,chatBot.class);
+            Intent intent=new Intent(this, CheckUser.class);
             startActivity(intent);
         }
     }
 
     public void goBasicQuestionPage(){
 
-        Intent intent=new Intent(this,chatBot.class);
+        Intent intent=new Intent(this, CheckUser.class);
         startActivity(intent);
     }
 

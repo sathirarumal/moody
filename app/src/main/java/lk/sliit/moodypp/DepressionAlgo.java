@@ -1,7 +1,5 @@
 package lk.sliit.moodypp;
 
-import android.view.View;
-
 public class DepressionAlgo{
 
     private double userHappyPerDay;     //p(H)
@@ -15,12 +13,14 @@ public class DepressionAlgo{
     private double meanNaturalInKB;//p(N/D)
 
     private double depressionPerSample; //p(D)
+
+    //using BAY'S theorem
     private double probaToHavDepWhenHappy;  //p(D/H)= (P(D)*(H/D))/P(H)
     private double probaToHavDepWhenAngry;  //p(D/A)= (P(D)*(A/D))/P(A)
     private double probaToHavDepWhenSad;    //p(D/S)= (P(D)*(S/D))/P(S)
     private double probaToHavDepWhenNatural;//p(D/N)= (P(D)*(N/D))/P(N)
 
-    //using BAY'S theorem
+    //using total probability
     //P(D)*=P(D/A).P(A)+P(D/H).P(H)+P(D/N).P(N)+P(D/S).P(S)
 
     public void applyMultiplicationLow(){

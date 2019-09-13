@@ -28,7 +28,7 @@ public class Calculate extends AppCompatActivity {
     public DatabaseReference UserEmotionchildRef;
     public DatabaseReference EmotionUserIDchildRef;
     public DatabaseReference MeanChildRef;
-    private static final String TAG=userDetails.class.getSimpleName();
+    private static final String TAG=Calculate.class.getSimpleName();
     private String userId;
     private FirebaseAuth mAuth;
     private String status;
@@ -66,45 +66,8 @@ public class Calculate extends AppCompatActivity {
         userId=user.getUid();
         UserchildRef=userDetailRef.child(userId);
 
-    }
 
-    protected void onStart() {
-        super.onStart();
-        UserchildRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user userObj=dataSnapshot.getValue(user.class);
-                status=userObj.getStatus();
-                if(status.equals("I take/taken medicine for Depression") || status.equals("I take/taken medicine for Both") ){
-                    type="Depression";
-                }else if(status.equals("I take/taken medicine for Anxiety")){
-                    type="Anxiety";
-                }else {
-                    type="Unknown";
-                }
-
-                insertDumyData();
-                SetMeanEmotionsDepressionUsers();
-                addEmotionsToKnowledgeBase();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void insertDumyData(){
-
-        emotionFirstDay =new EmotionFirstDay(0.80,0.1,0.5,0.5);
-        UserEmotionchildRef=userEmotionRef.child(type);
-        EmotionUserIDchildRef=UserEmotionchildRef.child(userId);
-        EmotionUserIDchildRef.setValue(emotionFirstDay);
-    }
-
-    public void addEmotionsToKnowledgeBase(){
-        userEmotionRef.addChildEventListener(new ChildEventListener() {
+        /*userEmotionRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 //Log.e(dataSnapshot.getKey(),dataSnapshot.getChildrenCount() + "");
@@ -139,8 +102,45 @@ public class Calculate extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
+        });*/
+
+    }
+
+    protected void onStart() {
+        super.onStart();
+        UserchildRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user userObj=dataSnapshot.getValue(user.class);
+                status=userObj.getStatus();
+                if(status.equals("I take/taken medicine for Depression") || status.equals("I take/taken medicine for Both") ){
+                    type="Depression";
+                }else if(status.equals("I take/taken medicine for Anxiety")){
+                    type="Anxiety";
+                }else {
+                    type="Unknown";
+                }
+
+                insertDumyData();
+                //SetMeanEmotionsDepressionUsers();
+                //addEmotionsToKnowledgeBase();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
         });
     }
+
+    public void insertDumyData(){
+
+        emotionFirstDay =new EmotionFirstDay(0.80,0.1,0.5,0.5);
+        UserEmotionchildRef=userEmotionRef.child(type);
+        EmotionUserIDchildRef=UserEmotionchildRef.child(userId);
+        EmotionUserIDchildRef.setValue(emotionFirstDay);
+    }
+
 
     public void SetMeanEmotionsDepressionUsers(){
                 meanEmotionRef.addValueEventListener(new ValueEventListener() {
@@ -183,9 +183,36 @@ public class Calculate extends AppCompatActivity {
 
     public void calculate(View view){
 
-        double result=proccessDepressionPerDay(0.3,0.1,0.5,0.1);
-        TextView textView=findViewById(R.id.textView4);
-        textView.setText(""+result);
+        //double result=proccessDepressionPerDay(0.3,0.1,0.5,0.1);
+
+        EditText editText=findViewById(R.id.editText);
+        EditText editText2=findViewById(R.id.editText2);
+        EditText editText3=findViewById(R.id.editText3);
+        EditText editText4=findViewById(R.id.editText4);
+        EditText editText5=findViewById(R.id.editText5);
+        EditText resultBox=findViewById(R.id.editText6);
+
+        Double uh=Double.parseDouble(editText.getText().toString());
+        Double ua=Double.parseDouble(editText2.getText().toString());
+        Double us=Double.parseDouble(editText3.getText().toString());
+        Double un=Double.parseDouble(editText4.getText().toString());
+        Double Dep=Double.parseDouble(editText5.getText().toString());
+
+        DepressionAlgo day=new DepressionAlgo();
+
+        day.setMeanAngryInKB(0.3);
+        day.setMeanHappyInKB(0.5);
+        day.setMeanNaturalInKB(0.15);
+        day.setMeanSadInKB(0.5);
+        day.setDepressionPerSample(Dep);
+        day.setUserAngryPerDay(ua);
+        day.setUserHappyPerDay(uh);
+        day.setUserSadPerDay(us);
+        day.setUserNaturalPerDay(un);
+
+        double depressionPoint=day.getProbalityToHasDepretionUsingEmotions();
+
+        resultBox.setText(""+depressionPoint);
     }
 
 }
