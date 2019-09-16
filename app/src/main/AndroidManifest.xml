@@ -3,6 +3,7 @@
     package="lk.sliit.moodypp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Calculate"></activity>
+        <activity android:name=".MusicListview"></activity>
+        <activity android:name=".musicplayer" />
+        <activity android:name=".Calculate" />
         <activity android:name=".chatBot" />
         <activity android:name=".userDetails" />
         <activity android:name=".basicQuections" />
