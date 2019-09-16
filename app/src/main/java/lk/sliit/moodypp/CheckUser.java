@@ -21,36 +21,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class chatBot extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
+public class CheckUser extends AppCompatActivity{
 
     public FirebaseDatabase firebaseDatabase;
     public DatabaseReference databaseReference;
     public DatabaseReference databaseReferenceExtraDetails;
     public DatabaseReference childRef;
-    public DatabaseReference childRefTR;
-    public DatabaseReference childRefDTR;
-    public DatabaseReference childRefATR;
     private String userId;
     private FirebaseAuth mAuth;
-    private double dtr;
-    private double atr;
     EditText dtrEdit;
     EditText atrEdit;
-    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_bot);
-
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
 
         firebaseDatabase=FirebaseDatabase.getInstance();
         databaseReference=firebaseDatabase.getReference("Users");
@@ -80,6 +64,8 @@ public class chatBot extends AppCompatActivity implements PopupMenu.OnMenuItemCl
 
                 if(userObj == null){
                     goBasicQuestionPage();
+                }else{
+                    goMainPage();
                 }
 
             }
@@ -96,47 +82,23 @@ public class chatBot extends AppCompatActivity implements PopupMenu.OnMenuItemCl
         startActivity(intent);
     }
 
-    public void insertTestResults(View view){
 
-        /*dtr=Double.parseDouble(dtrEdit.getText().toString());
-        atr=Double.parseDouble(atrEdit.getText().toString());
-
-        childRefTR=databaseReferenceExtraDetails.child(userId);
-        childRefDTR=childRefTR.child("DTR");
-        childRefDTR.setValue(dtr);
-        childRefATR=childRefTR.child("ATR");
-        childRefATR.setValue(atr);
-
-        Toast.makeText(chatBot.this, "ATR,DTR updated",
-                Toast.LENGTH_SHORT).show();*/
-
-        Intent intent=new Intent(this,Calculate.class);
-        startActivity(intent);
-
-    }
-
-    public void goSettings(){
-
-        Intent intent = new Intent(this,userDetails.class);
+    public void goMainPage(){
+        Intent intent=new Intent(this,MainMenu.class);
         startActivity(intent);
     }
 
-    public void showPopup(View v) {
+    /*public void showPopup(View v) {
 
         PopupMenu popup = new PopupMenu(this, v);
         popup.setOnMenuItemClickListener(this);
         popup.inflate(R.menu.actions);
         popup.show();
-    }
+    }*/
 
-    public void signOut(){
-        mAuth.signOut();
-        mGoogleSignInClient.signOut();
-        Intent intent=new Intent(this,MainActivity.class);
-        startActivity(intent);
-    }
 
-    @Override
+
+/*    @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.userDetails:
@@ -148,6 +110,6 @@ public class chatBot extends AppCompatActivity implements PopupMenu.OnMenuItemCl
             default:
                 return false;
         }
-    }
+    }*/
 
 }
