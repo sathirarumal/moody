@@ -119,8 +119,8 @@ public class musicplayer extends AppCompatActivity {
                 if (myMediaplayer.isPlaying()) {
                     btn_pause.setBackgroundResource(R.drawable.ic_play_arrow);
                 } else {
-                    //btn_pause.setBackground(R.drawable.ic_pause);
-                   //  myMediaplayer.start();
+                    btn_pause.setBackgroundResource(R.drawable.ic_pause);
+                   myMediaplayer.start();
                 }
             }
         });

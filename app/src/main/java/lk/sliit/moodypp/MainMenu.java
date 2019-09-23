@@ -194,7 +194,7 @@ public class MainMenu extends AppCompatActivity
         } else if (id == R.id.anx) {
 
         } else if (id == R.id.rel) {
-
+            goRel();
         } else if (id == R.id.set) {
             goSettings();
         } else if (id == R.id.sout) {
@@ -221,6 +221,11 @@ public class MainMenu extends AppCompatActivity
 
     public void goDep(){
         Intent intent=new Intent(this,Calculate.class);
+        startActivity(intent);
+    }
+
+    public void goRel(){
+        Intent intent=new Intent(this,MusicListview.class);
         startActivity(intent);
     }
 

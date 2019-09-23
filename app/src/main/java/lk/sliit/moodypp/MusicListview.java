@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -21,8 +23,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class MusicListview extends AppCompatActivity {
-    ListView mylistviewSong;
-    String[] items;
+   public ListView mylistviewSong;
+   public String[] items;
+  // private StorageReference mStorageRef;
 
 
 
@@ -33,6 +36,8 @@ public class MusicListview extends AppCompatActivity {
 
         mylistviewSong = (ListView)findViewById(R.id.myList);
         runtimepermission();
+
+      //  mStorageRef = FirebaseStorage.getInstance().getReference();
 
     }
 
@@ -57,6 +62,33 @@ public class MusicListview extends AppCompatActivity {
                     }
                 }).check();
     }
+
+    //connect to firebasestep1
+    public  void gonewlist(View view){
+        Intent intent=new Intent(this,graphView2.class);
+        startActivity(intent);
+    }
+
+
+
+    /*public void getAudio(){
+
+        File localFile = File.createTempFile("images", "jpg");
+        riversRef.getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // Successfully downloaded data to local file
+                        // ...
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle failed download
+                // ...
+            }
+        });
+    }*/
 
     public ArrayList<File> findSong(File root){
         ArrayList<File> arrayList = new ArrayList<File>();
@@ -103,6 +135,9 @@ public class MusicListview extends AppCompatActivity {
 
             }
         });
+
+
+
     }
 
 

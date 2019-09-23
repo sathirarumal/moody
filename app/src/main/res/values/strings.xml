@@ -16,7 +16,7 @@
 
 
     <string name="title_activity_main_menu" tools:ignore="ExtraTranslation">MainMenu</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_open" tools:ignore="ExtraTranslation">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">MOODY : Pocket Psychiatrist</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -28,7 +28,7 @@
     <string name="set">Settings</string>
     <string name="sout">Sign Out</string>
 
-    <string-array name= "replyArray">
+    <string-array name="replyArray">
         <item> Not at all </item>
         <item> Several days </item>
         <item> More than half of the days </item>
@@ -36,7 +36,7 @@
 
     </string-array>
 
-    <string-array name= "chooseArray">
+    <string-array name="chooseArray">
         <item> Listen Relaxing Music  </item>
         <item> Read Positive Thinking Quotes </item>
 
