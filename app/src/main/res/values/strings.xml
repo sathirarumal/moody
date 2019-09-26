@@ -33,12 +33,23 @@
         <item> Several days </item>
         <item> More than half of the days </item>
         <item> Nearly everyday </item>
-
     </string-array>
 
-    <string-array name= "chooseArray">
-        <item> Listen Relaxing Music  </item>
+    <string-array name= "chooseArrayDep">
+        <item> Test Anxiety </item>
+        <item> Listen Relaxing Music </item>
         <item> Read Positive Thinking Quotes </item>
+    </string-array>
+
+    <string-array name= "chooseArrayAnx">
+        <item> Test Depression </item>
+        <item> Listen Relaxing Music </item>
+        <item> Read Positive Thinking Quotes </item>
+    </string-array>
+
+    <string-array name= "deseaseArray">
+        <item> depression  </item>
+        <item> anxiety </item>
 
     </string-array>
 

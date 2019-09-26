@@ -6,6 +6,7 @@ public class dqSession {
     private double dq3;
     private double dq4;
     private double dq5;
+    private final double max_value=35;
 
     public void setDq1(double dq1)
     {
@@ -49,8 +50,10 @@ public class dqSession {
         return dq5;
     }
 
-    public double GetDqPointTotal(){
+    public double GetDqPointPercentage(){
         double dqPoint=this.dq1+this.dq2+this.dq3+this.dq4+this.dq5;
-        return dqPoint;
+        double dPercentage = dqPoint/max_value ;
+        return dPercentage;
+
     }
 }
