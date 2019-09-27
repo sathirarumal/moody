@@ -1,7 +1,10 @@
 package lk.sliit.moodypp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -84,7 +87,6 @@ public class MainMenu extends AppCompatActivity
     private LinearLayout chatLayout;
     private EditText queryEditText;
     private Spinner replySpinner;
-    private Spinner chooseSpinner;
     private ScrollView scrollview;
 
     // Java V2
@@ -94,6 +96,7 @@ public class MainMenu extends AppCompatActivity
     public String replyState;
     public botTrainer bt;
     public String type;
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -126,10 +129,13 @@ public class MainMenu extends AppCompatActivity
         mAuth= FirebaseAuth.getInstance();
         userId=mAuth.getCurrentUser().getUid();
 
-        Fde_Database = FirebaseDatabase.getInstance().getReference("FirstDEPRESSIONTestResult");
-        F_deChild=Fde_Database.child(userId);
-        Fan_Database = FirebaseDatabase.getInstance().getReference("FirstANXIETYTestResult");
-        F_anChild=Fan_Database.child(userId);
+        //using SharedPreference
+        SharedPreferences sharePref2= PreferenceManager.getDefaultSharedPreferences(this);
+        type= sharePref2.getString("userType",null);
+
+        Log.i("child",type);
+
+
 
      /////////////////////////////////////////////////////////////ONCREATE Beg//////////////////////////////////////////////////////////////////rashini's code
 
@@ -164,9 +170,8 @@ public class MainMenu extends AppCompatActivity
             return false;
         });
 
-        initV2Chatbot();
 
-        replySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+/*        replySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String spinnerMsg=replySpinner.getSelectedItem().toString();
@@ -175,9 +180,9 @@ public class MainMenu extends AppCompatActivity
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
-        });
+        });*/
 
-
+        initV2Chatbot();
 
 
         //////////////////////////////////////////////////////////ONCREATE E///////////////////////////////////////////////////////////////////
@@ -186,39 +191,12 @@ public class MainMenu extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        type="depression";
+        Log.i("child","onstart Start");
 
-        mAuth= FirebaseAuth.getInstance();
-        userId=mAuth.getCurrentUser().getUid();
-
-        database=FirebaseDatabase.getInstance();
-        userDetailRef = FirebaseDatabase.getInstance().getReference("Users");
-        userIdRef = userDetailRef.child(userId);
-
-        userIdRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                user userObj = dataSnapshot.getValue(user.class);
-                String status = userObj.getStatus();
-
-                if(status == null){
-                    type="depression";
-                }else if (status.equals("I take/taken medicine for Depression")) {
-                    type="depression";
-                } else if (status.equals("I take/taken medicine for Anxiety")) {
-                    type="anxiety";
-                }else {
-                    type="depression";
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+        Fde_Database = FirebaseDatabase.getInstance().getReference("FirstDEPRESSIONTestResult");
+        F_deChild=Fde_Database.child(userId);
+        Fan_Database = FirebaseDatabase.getInstance().getReference("FirstANXIETYTestResult");
+        F_anChild=Fan_Database.child(userId);
 
         if(type.equals("depression")) {
             F_deChild.addValueEventListener(new ValueEventListener() {
@@ -242,6 +220,8 @@ public class MainMenu extends AppCompatActivity
                 }
             });
         }else if(type.equals("anxiety")){
+
+            Log.i("child","anxiety checked");
             F_anChild.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -261,8 +241,13 @@ public class MainMenu extends AppCompatActivity
 
                 }
             });
-        }else{
-            QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("hi").setLanguageCode("en-US")).build();
+        }else if(type.equals("both")){
+            QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("both123").setLanguageCode("en-US")).build();
+            new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
+
+        }else if(type.equals("don't know")){
+            //send this to settings to select
+            QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("unknown123").setLanguageCode("en-US")).build();
             new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
         }
     }
@@ -358,7 +343,15 @@ public class MainMenu extends AppCompatActivity
         } }
 
     private void userSendMessage(View view) {
-        String msg = queryEditText.getText().toString();
+        String msg;
+        //change value from textEditor to spinner
+        if(replySpinner.getVisibility() == View.VISIBLE){
+            msg=replySpinner.getSelectedItem().toString();
+        }else {
+             msg = queryEditText.getText().toString();
+        }
+
+        //check the msg of user
 
         if (msg.trim().isEmpty()) {
             Toast.makeText(MainMenu.this, "Please enter your message!", Toast.LENGTH_LONG).show(); }
@@ -372,7 +365,8 @@ public class MainMenu extends AppCompatActivity
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText(msgText).setLanguageCode("en-US")).build();
             new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
 
-            reset(); }
+            reset();
+        }
     }
 
 
@@ -432,7 +426,7 @@ public class MainMenu extends AppCompatActivity
 
         if (botMsg.equals("oh, sorry to hear that. What made you feel not good today?")){
 
-            replyState=bt.checkIllnessType();
+            replyState=type;
         }
         else if (botMsg.equals("Do you often feel hopelessness or guilty ?"))
         {
@@ -637,7 +631,7 @@ public class MainMenu extends AppCompatActivity
         else if (botMsg.equals("Thanks! I saved your answers.What would you like to do next?"))
         {
             botTrainer bt = new botTrainer();
-            String State=bt.checkIllnessType();
+            String State=type;
 
             if(State.equals("depression")) {
 
@@ -665,6 +659,22 @@ public class MainMenu extends AppCompatActivity
         {
             replyState ="awsome_reason";
         }
+        else if (botMsg.equals("Please select priority disorder to continue"))
+        {
+            replyState ="selectDis";
+        }
+        else if (botMsg.equals("you have depression and anxiety please select one to continue"))
+        {
+            replySpinner = findViewById(R.id.spinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.firstdDeseaseArray, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            replySpinner.setAdapter(adapter);
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+
+            replyState=replySpinner.getSelectedItem().toString();
+
+        }
 
     }
 
@@ -685,6 +695,11 @@ public class MainMenu extends AppCompatActivity
             else if (reply.equals("anxiety"))
             {
                 return "anxiety";
+            }
+            else if (reply.equals("selectDis"))
+            {
+                Intent i= new Intent(this,settings.class);
+                startActivity(i);
             }
             else if (reply.equals("awsome_reason"))
             {
@@ -878,6 +893,38 @@ public class MainMenu extends AppCompatActivity
     }
 
 
+    public String checkIllnessType() {
+
+        userDetailRef = FirebaseDatabase.getInstance().getReference("Users");
+        userIdRef = userDetailRef.child(userId);
+        userIdRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                user userObj = dataSnapshot.getValue(user.class);
+                String status = userObj.getStatus();
+                Log.i("child",String.valueOf(status));
+
+                if(status == null){
+                    type="depression";
+                }else if (status.equals("I take/taken medicine for Depression")) {
+                    type="depression";
+                } else if (status.equals("I take/taken medicine for Anxiety")) {
+                    type="anxiety";
+                    Log.i("child",type);
+                }else {
+                    type="depression";
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return type;
+    }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 

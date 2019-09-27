@@ -1,5 +1,8 @@
 package lk.sliit.moodypp;
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -120,35 +123,5 @@ public double ansPoint(String msg, String state)
     public void proccessKnowledgeBase(){
 
     }
-
-    public String checkIllnessType() {
-
-        mAuth= FirebaseAuth.getInstance();
-        userId=mAuth.getCurrentUser().getUid();
-
-        database=FirebaseDatabase.getInstance();
-        userDetailRef = database.getReference("Users");
-        userIdRef = userDetailRef.child(userId);
-
-        userIdRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                user userObj = dataSnapshot.getValue(user.class);
-                status = userObj.getStatus();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-            return type;
-
-    }
-
 
 }
