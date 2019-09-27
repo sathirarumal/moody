@@ -1,6 +1,9 @@
 package lk.sliit.moodypp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +38,7 @@ public class basicQuections extends AppCompatActivity {
     private Spinner statusSpinner;
     private EditText callNameText;
     private EditText ageText;
+    public String type;
 
 
     @Override
@@ -88,6 +92,21 @@ public class basicQuections extends AppCompatActivity {
         age=ageText.getText().toString();
         status=statusSpinner.getSelectedItem().toString();
         gender=genderSpinner.getSelectedItem().toString();
+
+        if (status.equals("I take/took medicine for Depression")) {
+            type = "depression";
+        } else if (status.equals("I take/took medicine for Anxiety")) {
+            type = "anxiety";
+        }else if(status.equals("I take/took medicine for Both")){
+            type = "both";
+        }else {
+            type = "don't know";
+        }
+
+        SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharePref.edit();
+        editor.putString("userType",type);
+        editor.apply();
 
         user userObj=new user(email,callName,age,gender,status);
 
