@@ -23,7 +23,7 @@ public class basicQuections extends AppCompatActivity {
     private static final String TAG=MainActivity.class.getSimpleName();
     private String email;
     private String name;
-    private String callName;
+    public String callName;
     private String age;
     private String gender;
     private String status;
