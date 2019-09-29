@@ -5,11 +5,13 @@
     <color name="colorAccent">#99D5A8</color>
     <color name="themeColor">#9DE8A1</color>
     <color name="insertTab">#e1ecf0</color>
-    <color name="navBar">#714DB3</color>
+    <color name="navBar">#7853B9</color>
     <color name="navBarText">#0DB3A3</color>
     <color name="navBaritem">#373A3A</color>
     <color name ="colorBot"> #B7F0F1 </color>
     <color name="colorUser"> #99D5A8 </color>
+    <color name="whiteButton">#FFFFFF</color>
+    <color name="errorColor">#DD0928</color>
 
 
 

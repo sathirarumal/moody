@@ -71,7 +71,6 @@ public class basicQuections extends AppCompatActivity {
             heyText.setText("Hey " + name);
         }
 
-
         // gender spinner
         genderSpinner = (Spinner) findViewById(R.id.genderspin);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.GenderArray, android.R.layout.simple_spinner_item);
@@ -93,15 +92,22 @@ public class basicQuections extends AppCompatActivity {
         status=statusSpinner.getSelectedItem().toString();
         gender=genderSpinner.getSelectedItem().toString();
 
-        if (status.equals("I take/took medicine for Depression")) {
-            type = "depression";
-        } else if (status.equals("I take/took medicine for Anxiety")) {
-            type = "anxiety";
-        }else if(status.equals("I take/took medicine for Both")){
-            type = "both";
-        }else {
-            type = "don't know";
-        }
+
+        if(callName.isEmpty()){
+            callNameText.setError("please fill this form to Continue");
+        }else if(age.isEmpty()){
+            ageText.setError("please fill this form to Continue");
+        }else{
+       
+            if (status.equals("I take/took medicine for Depression")) {
+              type = "depression";
+            } else if (status.equals("I take/took medicine for Anxiety")) {
+              type = "anxiety";
+            }else if(status.equals("I take/took medicine for Both")){
+              type = "both";
+            }else {
+              type = "don't know";
+            }
 
         SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharePref.edit();
@@ -115,6 +121,8 @@ public class basicQuections extends AppCompatActivity {
 
         Intent intent=new Intent(this, CheckUser.class);
         startActivity(intent);
+        }  
+
     }
 
 
