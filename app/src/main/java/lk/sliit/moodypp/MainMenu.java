@@ -1,7 +1,10 @@
 package lk.sliit.moodypp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -13,6 +16,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -37,12 +41,17 @@ import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.SessionsSettings;
 import com.google.cloud.dialogflow.v2beta1.TextInput;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -52,7 +61,7 @@ public class MainMenu extends AppCompatActivity
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
-
+    private String userId;
 
     //rashini
 
@@ -60,6 +69,11 @@ public class MainMenu extends AppCompatActivity
     public DatabaseReference De_Database;
     public DatabaseReference Fde_Database;
     public DatabaseReference An_Database;
+    public DatabaseReference Fan_Database;
+    public DatabaseReference F_deChild;
+    public DatabaseReference F_anChild;
+    public DatabaseReference userDetailRef;
+    public DatabaseReference userIdRef;
 
     dqSession dqSessionObj;
     fdqSession fdqSessionObj;
@@ -73,19 +87,23 @@ public class MainMenu extends AppCompatActivity
     private LinearLayout chatLayout;
     private EditText queryEditText;
     private Spinner replySpinner;
+    private ScrollView scrollview;
 
     // Java V2
     private SessionsClient sessionsClient;
     private SessionName session;
 
     public String replyState;
+    public botTrainer bt;
+    public String type;
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -94,13 +112,11 @@ public class MainMenu extends AppCompatActivity
                 DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.openDrawer(GravityCompat.START);
             }
-
         });
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
-
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -111,12 +127,21 @@ public class MainMenu extends AppCompatActivity
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         //fireBase auth
         mAuth= FirebaseAuth.getInstance();
+        userId=mAuth.getCurrentUser().getUid();
+
+        //using SharedPreference
+        SharedPreferences sharePref2= PreferenceManager.getDefaultSharedPreferences(this);
+        type= sharePref2.getString("userType",null);
+
+        Log.i("child",type);
 
 
-        //rashinies code
 
-        final ScrollView scrollview = findViewById(R.id.chatScrollView);
+     /////////////////////////////////////////////////////////////ONCREATE Beg//////////////////////////////////////////////////////////////////rashini's code
+
+        scrollview = findViewById(R.id.chatScrollView);
         scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+
 
         chatLayout = findViewById(R.id.chatLayout);
 
@@ -128,6 +153,7 @@ public class MainMenu extends AppCompatActivity
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         replySpinner.setAdapter(adapter);
         replySpinner.setVisibility(View.GONE);
+
         //replySpinner.setOnItemClickListener();
 
         queryEditText = findViewById(R.id.queryEditText);
@@ -139,14 +165,13 @@ public class MainMenu extends AppCompatActivity
                         userSendMessage(sendBtn);
                         return true;
                     default:
-                        break;
-                }
+                        break;   }
             }
             return false;
         });
-        // Java V2
-        initV2Chatbot();
-        replySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+
+/*        replySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String spinnerMsg=replySpinner.getSelectedItem().toString();
@@ -154,14 +179,77 @@ public class MainMenu extends AppCompatActivity
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-
             }
-        });
+        });*/
 
-        QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("hi").setLanguageCode("en-US")).build();
-        new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
+        initV2Chatbot();
 
 
+        //////////////////////////////////////////////////////////ONCREATE E///////////////////////////////////////////////////////////////////
+    }
+
+    protected void onStart() {
+        super.onStart();
+
+        Log.i("child","onstart Start");
+
+        Fde_Database = FirebaseDatabase.getInstance().getReference("FirstDEPRESSIONTestResult");
+        F_deChild=Fde_Database.child(userId);
+        Fan_Database = FirebaseDatabase.getInstance().getReference("FirstANXIETYTestResult");
+        F_anChild=Fan_Database.child(userId);
+
+        if(type.equals("depression")) {
+            F_deChild.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    fdqSession fdqObj = dataSnapshot.getValue(fdqSession.class);
+                    if(fdqObj == null){
+                        QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("FirstHiDep").setLanguageCode("en-US")).build();
+                        new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
+
+                    }else {
+                        QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("hi").setLanguageCode("en-US")).build();
+                        new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }else if(type.equals("anxiety")){
+
+            Log.i("child","anxiety checked");
+            F_anChild.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    faqSession faqObj = dataSnapshot.getValue(faqSession.class);
+                    if(faqObj == null){
+                        QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("FirstHiAnx").setLanguageCode("en-US")).build();
+                        new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
+
+                    }else {
+                        QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("hi").setLanguageCode("en-US")).build();
+                        new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }else if(type.equals("both")){
+            QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("both123").setLanguageCode("en-US")).build();
+            new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
+
+        }else if(type.equals("don't know")){
+            //send this to settings to select
+            QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("unknown123").setLanguageCode("en-US")).build();
+            new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
+        }
     }
 
     @Override
@@ -179,7 +267,6 @@ public class MainMenu extends AppCompatActivity
 
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
-
     }
 
 
@@ -238,7 +325,7 @@ public class MainMenu extends AppCompatActivity
 
 
 
-    //rashini
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////rashini
 
     private void initV2Chatbot() {
         try {
@@ -256,10 +343,19 @@ public class MainMenu extends AppCompatActivity
         } }
 
     private void userSendMessage(View view) {
-        String msg = queryEditText.getText().toString();
+        String msg;
+        //change value from textEditor to spinner
+        if(replySpinner.getVisibility() == View.VISIBLE){
+            msg=replySpinner.getSelectedItem().toString();
+        }else {
+             msg = queryEditText.getText().toString();
+        }
+
+        //check the msg of user
+
         if (msg.trim().isEmpty()) {
-            Toast.makeText(MainMenu.this, "Please enter your message!", Toast.LENGTH_LONG).show();
-        } else {
+            Toast.makeText(MainMenu.this, "Please enter your message!", Toast.LENGTH_LONG).show(); }
+        else {
             showTextView(msg, USER);
             queryEditText.setText("");
 
@@ -278,10 +374,17 @@ public class MainMenu extends AppCompatActivity
         if (response != null) {
             String botReply = response.getQueryResult().getFulfillmentText();
             Log.d(TAG, "V2 Bot Reply: " + botReply);
-            showTextView(botReply, BOT);
-            //this function set the code for reply state
-            setCode(botReply);
-        } else {
+
+            if (botReply.equals("")) {
+                showTextView("Sorry i can't understand.", BOT); }
+            else {
+
+                showTextView(botReply, BOT);
+                //this function set the code for reply state
+                setCode(botReply);
+            }
+        }
+        else {
             Log.d(TAG, "Bot Reply: Null");
             showTextView("There was some communication issue. Check your internet connection and please Try again!", BOT);
         }
@@ -323,7 +426,7 @@ public class MainMenu extends AppCompatActivity
 
         if (botMsg.equals("oh, sorry to hear that. What made you feel not good today?")){
 
-            replyState="ignoreReply1";
+            replyState=type;
         }
         else if (botMsg.equals("Do you often feel hopelessness or guilty ?"))
         {
@@ -331,212 +434,312 @@ public class MainMenu extends AppCompatActivity
             replySpinner.setVisibility(View.VISIBLE);
 
             replyState="dq1";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(MainMenu.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+
         }
         else if (botMsg.equals("Do you feel trouble concentrating or remembering things?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState ="dq2";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("Do you feel trouble making decisions ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState ="dq3";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("Do you loss of interest in things once pleasurable ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState ="dq4";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("Do you have suicidal thoughts ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState ="dq5";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //first time depression questions
         else if (botMsg.equals("While you have depression, do you often feel hopelessness or guilty ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState="fdq1";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("While you have depression, do you feel trouble concentrating or remembering things?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState ="fdq2";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("While you have depression, do you feel trouble making decisions ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState ="fdq3";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("While you have depression, do you loss of interest in things once pleasurable ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState ="fdq4";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("While you have depression, do you have suicidal thoughts ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState ="fdq5";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //ANXIETY QUESTIONS
         else if (botMsg.equals("Do you experience restlessness on the majority of days ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState="aq1";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("Do you waking up in the middle of the night or having trouble falling asleep ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState="aq2";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("Do you having tense muscles on most days ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState="aq3";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("Do you fearful of being embarrassed or humiliated in front of others ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState="aq4";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("Do you avoiding certain social events because of these fears ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState="aq5";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
         else if (botMsg.equals("Do you worried that you may be judged or scrutinized by others ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState="aq6";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
-        else if (botMsg.equals("Do you worried that you may be judged or scrutinized by others ?"))
+
+        else if (botMsg.equals("Do you feel Agitate in following situations.\n" +
+                "                using public transportation\n" +
+                "                Being in open spaces\n" +
+                "                Being in enclosed spaces\n" +
+                "                Standing in line or being in a crowd\n" +
+                "                Being outside of the home alone"))
         {
+
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
             replyState="aq7";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
-        else if (botMsg.equals("Do you feel Agitate in following situations.\n " +
-                "using public transportation\n" +
-                "Being in open spaces\n" +
-                "Being in enclosed spaces\n" +
-                "Standing in line or being in a crowd\n" +
-                "Being outside of the home alone "))
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //first time anxiety questions
+        else if (botMsg.equals("While you have anxiety, do you experience restlessness on the majority of days ?"))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
-
-            replyState="aq8";
+            replyState="faq1";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
+        else if (botMsg.equals("While you have anxiety, do you waking up in the middle of the night or having trouble falling asleep ?"))
+        {
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+            replyState ="faq2";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+        }
+        else if (botMsg.equals("While you have anxiety, do you having tense muscles on most days ?"))
+        {
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+            replyState ="faq3";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+        }
+        else if (botMsg.equals("While you have anxiety, do you fearful of being embarrassed or humiliated in front of others ?"))
+        {
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+            replyState ="faq4";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+        }
+        else if (botMsg.equals("While you have anxiety, do you avoiding certain social events because of these fears ?"))
+        {
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+            replyState ="faq5";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+        }
+        else if (botMsg.equals("While you have anxiety, do you worried that you may be judged or scrutinized by others ?"))
+        {
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+            replyState ="faq6";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+        }
+        else if (botMsg.equals("Do you feel Agitate in following situations.\n" +
+                "        using public transportation\n" +
+                "        Being in open spaces\n" +
+                "        Being in enclosed spaces\n" +
+                "        Standing in line or being in a crowd\n" +
+                "        Being outside of the home alone"))
+        {
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+            replyState ="faq7";
+            scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
+        }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
         //After dq choosing questions
         else if (botMsg.equals("Thanks! I saved your answers.What would you like to do next?"))
         {
+            botTrainer bt = new botTrainer();
+            String State=type;
 
-            replySpinner = findViewById(R.id.spinner);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.chooseArray, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            replySpinner.setAdapter(adapter);
-            queryEditText.setVisibility(View.GONE);
-            replySpinner.setVisibility(View.VISIBLE);
+            if(State.equals("depression")) {
+
+                replySpinner = findViewById(R.id.spinner);
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.chooseArrayDep, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                replySpinner.setAdapter(adapter);
+                queryEditText.setVisibility(View.GONE);
+                replySpinner.setVisibility(View.VISIBLE);
+
+            }else {
+
+                replySpinner = findViewById(R.id.spinner);
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.chooseArrayAnx, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                replySpinner.setAdapter(adapter);
+                queryEditText.setVisibility(View.GONE);
+                replySpinner.setVisibility(View.VISIBLE);
+
+            }
         }
-
 
         //Awsome reson
         else if (botMsg.equals("Wow. I'm so happy to hear that.What make you feel this much happy?"))
         {
             replyState ="awsome_reason";
         }
+        else if (botMsg.equals("Please select priority disorder to continue"))
+        {
+            replyState ="selectDis";
+        }
+        else if (botMsg.equals("you have depression and anxiety please select one to continue"))
+        {
+            replySpinner = findViewById(R.id.spinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.firstdDeseaseArray, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            replySpinner.setAdapter(adapter);
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+
+            replyState=replySpinner.getSelectedItem().toString();
+
+        }
+
     }
+
+
+
 
 
     public String checkCode(String reply,String msg){
 
         if(reply != null) {
 
-            if (reply.equals("ignoreReply"))
+            botTrainer bt = new botTrainer();
+
+            if (reply.equals("depression"))
             {
-                return "ignoreReply";
+                return "depression";
+            }
+            else if (reply.equals("anxiety"))
+            {
+                return "anxiety";
+            }
+            else if (reply.equals("selectDis"))
+            {
+                Intent i= new Intent(this,settings.class);
+                startActivity(i);
             }
             else if (reply.equals("awsome_reason"))
             {
                 return "awsome_reason";
             }
-            else if (reply.equals("ignoreReply1"))
-            {
-                return "ignoreReply1";
-            }
 
-//depression reply state checker
+/////////////////////////////////////////depression questions reply state checker
             else if (reply.equals("dq1"))
             {
                 dqSessionObj= new dqSession();
-                dqSessionObj.setDq1(ans_points(msg));
-           /* String aa = "" +dqSessionObj.getDq1();
-            Toast.makeText(BotActivity.this, aa, Toast.LENGTH_LONG).show(); */
+                dqSessionObj.setDq1(bt.ansPoint(msg, "low"));
                 return "dq1";
             }
             else if (reply.equals("dq2"))
             {
-                dqSessionObj.setDq2(ans_points(msg));
+                dqSessionObj.setDq2(bt.ansPoint(msg, "low"));
                 return "dq2";
             }
             else if (reply.equals("dq3"))
             {
-                dqSessionObj.setDq3(ans_points(msg));
+                dqSessionObj.setDq3(bt.ansPoint(msg, "low"));
                 return "dq3";
             }
             else if (reply.equals("dq4"))
             {
-                dqSessionObj.setDq4(ans_points(msg));
+                dqSessionObj.setDq4(bt.ansPoint(msg, "low"));
                 return "dq4";
             }
             else if (reply.equals("dq5"))
             {
-                dqSessionObj.setDq5(ans_points(msg));
+                dqSessionObj.setDq5(bt.ansPoint(msg, "high"));
 
-                double dqpoint = dqSessionObj.GetDqPointTotal();
+                double dqpoint = dqSessionObj.GetDqPointPercentage();
                 DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
                 Date date=new Date();
-                String today=""+  date  ; //dateFormat.format(date);
+                String today=""+ date  ; //dateFormat.format(date);
 
                 De_Database = FirebaseDatabase.getInstance().getReference("DTR");
-                De_Database.child(today).setValue(dqpoint);
-                //dqSessionObj.setDq1(msg);
+                De_Database.child(userId).child(today).setValue(dqpoint);
+
                 return "dq5";
             }
 
@@ -545,73 +748,78 @@ public class MainMenu extends AppCompatActivity
             else if (reply.equals("fdq1"))
             {
                 fdqSessionObj= new fdqSession();
-                fdqSessionObj.setFdq1(ans_points(msg));
+                fdqSessionObj.setFdq1(bt.first_time_ansPoint(msg));
            /* String aa = "" +dqSessionObj.getDq1();
             Toast.makeText(BotActivity.this, aa, Toast.LENGTH_LONG).show(); */
                 return "fdq1";
             }
             else if (reply.equals("fdq2"))
             {
-                fdqSessionObj.setFdq2(ans_points(msg));
+                fdqSessionObj.setFdq2(bt.first_time_ansPoint(msg));
                 return "fdq2";
             }
             else if (reply.equals("fdq3"))
             {
-                fdqSessionObj.setFdq3(ans_points(msg));
+                fdqSessionObj.setFdq3(bt.first_time_ansPoint(msg));
                 return "fdq3";
             }
             else if (reply.equals("fdq4"))
             {
-                fdqSessionObj.setFdq4(ans_points(msg));
+                fdqSessionObj.setFdq4(bt.first_time_ansPoint(msg));
                 return "fdq4";
             }
             else if (reply.equals("fdq5"))
             {
-                fdqSessionObj.setFdq5(ans_points(msg));
+                fdqSessionObj.setFdq5(bt.first_time_ansPoint(msg));
 
-                Fde_Database = FirebaseDatabase.getInstance().getReference("FirstTestResult");
-                Fde_Database.child("Depression").setValue(fdqSessionObj);
+                DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+                Date date=new Date();
+                String today=""+ date  ;
+
+
+                Fde_Database.child(userId).child(today).setValue(fdqSessionObj);
 
                 return "fdq5";
             }
 
-            //Anxiety reply state checker
+
+ //Anxiety reply state checker
             else if (reply.equals("aq1"))
             {
                 aqSessionObj = new aqSession();
-                aqSessionObj.setAq1(ans_points(msg));
+                aqSessionObj.setAq1(bt.ansPoint(msg, "low"));
            /* String aa = "" +dqSessionObj.getDq1();
             Toast.makeText(BotActivity.this, aa, Toast.LENGTH_LONG).show(); */
                 return "aq1";
             }
             else if (reply.equals("aq2"))
             {
-                aqSessionObj.setAq2(ans_points(msg));
+                aqSessionObj.setAq2(bt.ansPoint(msg, "low"));
                 return "aq2";
             }
             else if (reply.equals("aq3"))
             {
-                aqSessionObj.setAq3(ans_points(msg));
+                aqSessionObj.setAq3(bt.ansPoint(msg, "low"));
                 return "aq3";
             }
             else if (reply.equals("aq4"))
             {
-                aqSessionObj.setAq4(ans_points(msg));
+                aqSessionObj.setAq4(bt.ansPoint(msg, "low"));
                 return "aq4";
             }
             else if (reply.equals("aq5"))
             {
-                aqSessionObj.setAq5(ans_points(msg));
+                aqSessionObj.setAq5(bt.ansPoint(msg, "low"));
                 return "aq5";
             }
             else if (reply.equals("aq6"))
             {
-                aqSessionObj.setAq6(ans_points(msg));
+                aqSessionObj.setAq6(bt.ansPoint(msg, "low"));
                 return "aq6";
             }
             else if (reply.equals("aq7"))
             {
-                aqSessionObj.setAq7(ans_points(msg));
+                aqSessionObj.setAq7(bt.ansPoint(msg, "high"));
 
                 double aqpoint = aqSessionObj.getAqPointTotal();
                 DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
@@ -619,23 +827,62 @@ public class MainMenu extends AppCompatActivity
                 String today=""+  date  ; //dateFormat.format(date);
 
                 An_Database = FirebaseDatabase.getInstance().getReference("ATR");
-                An_Database.child(today).setValue(aqpoint);
-                //dqSessionObj.setDq1(msg);
+                An_Database.child(userId).child(today).setValue(aqpoint);
+
                 return "aq7";
             }
-            else if (reply.equals("aq8"))
+
+            //First time anxiety questions
+            else if (reply.equals("faq1"))
             {
-                aqSessionObj.setAq5(ans_points(msg));
-                return "aq8";
+                fdqSessionObj= new fdqSession();
+                fdqSessionObj.setFdq1(bt.first_time_ansPoint(msg));
+                return "faq1";
             }
+            else if (reply.equals("faq2"))
+            {
+                fdqSessionObj.setFdq2(bt.first_time_ansPoint(msg));
+                return "faq2";
+            }
+            else if (reply.equals("faq3"))
+            {
+                fdqSessionObj.setFdq3(bt.first_time_ansPoint(msg));
+                return "faq3";
+            }
+            else if (reply.equals("faq4"))
+            {
+                fdqSessionObj.setFdq4(bt.first_time_ansPoint(msg));
+                return "faq4";
+            }
+            else if (reply.equals("faq5"))
+            {
+                fdqSessionObj.setFdq4(bt.first_time_ansPoint(msg));
+                return "faq5";
+            }
+            else if (reply.equals("faq6"))
+            {
+                fdqSessionObj.setFdq4(bt.first_time_ansPoint(msg));
+                return "faq6";
+            }
+            else if (reply.equals("faq7"))
+            {
+                fdqSessionObj.setFdq5(bt.first_time_ansPoint(msg));
+
+                DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+                Date date=new Date();
+                String today=""+ date  ;
 
 
-
+                Fde_Database.child(userId).child(today).setValue(fdqSessionObj);
+                return "fdq7";
+            }
         }
         return msg;
 
-
     }
+
+
+
 
 
     public void reset()
@@ -646,30 +893,41 @@ public class MainMenu extends AppCompatActivity
     }
 
 
-    public double ans_points(String msg)
-    {
-        if (msg.equals("Not at all"))
-        {
-            return  0;
-        }
-        else if(msg.equals("Several days"))
-        {
-            return  1;
+    public String checkIllnessType() {
 
-        }
-        else if(msg.equals("More than half of the days"))
-        {
-            return  2;
+        userDetailRef = FirebaseDatabase.getInstance().getReference("Users");
+        userIdRef = userDetailRef.child(userId);
+        userIdRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        }
-        else if(msg.equals("Nearly everyday"))
-        {
-            return  5;
+                user userObj = dataSnapshot.getValue(user.class);
+                String status = userObj.getStatus();
+                Log.i("child",String.valueOf(status));
 
-        }
+                if(status == null){
+                    type="depression";
+                }else if (status.equals("I take/taken medicine for Depression")) {
+                    type="depression";
+                } else if (status.equals("I take/taken medicine for Anxiety")) {
+                    type="anxiety";
+                    Log.i("child",type);
+                }else {
+                    type="depression";
+                }
+            }
 
-        return 10;
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return type;
     }
+
+////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 }

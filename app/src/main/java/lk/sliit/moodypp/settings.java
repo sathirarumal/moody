@@ -1,5 +1,7 @@
 package lk.sliit.moodypp;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +46,7 @@ public class settings extends AppCompatActivity {
     private SwipeRefreshLayout mySwipeRefreshLayout;
     private int phoneStatus;
     private int relationStatus;
+    public String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +93,21 @@ public class settings extends AppCompatActivity {
         age=ageText.getText().toString();
         status=statusSpinner.getSelectedItem().toString();
         gender=genderSpinner.getSelectedItem().toString();
+
+        if (status.equals("I take/took medicine for Depression")) {
+            type = "depression";
+        } else if (status.equals("I take/took medicine for Anxiety")) {
+            type = "anxiety";
+        }else if(status.equals("I take/took medicine for Both")){
+            type = "depression";
+        }else {
+            type = "don't know";
+        }
+
+        SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharePref.edit();
+        editor.putString("userType",type);
+        editor.apply();
 
         user userObj=new user(email,callName,age,gender,status);
 
