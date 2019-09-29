@@ -67,7 +67,6 @@ public class basicQuections extends AppCompatActivity {
             heyText.setText("Hey " + name);
         }
 
-
         // gender spinner
         genderSpinner = (Spinner) findViewById(R.id.genderspin);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.GenderArray, android.R.layout.simple_spinner_item);
@@ -89,13 +88,17 @@ public class basicQuections extends AppCompatActivity {
         status=statusSpinner.getSelectedItem().toString();
         gender=genderSpinner.getSelectedItem().toString();
 
-        user userObj=new user(email,callName,age,gender,status);
-
-        childRef=databaseReference.child(userId);
-        childRef.setValue(userObj);
-
-        Intent intent=new Intent(this, CheckUser.class);
-        startActivity(intent);
+        if(callName.isEmpty()){
+            callNameText.setError("please fill this form to Continue");
+        }else if(age.isEmpty()){
+            ageText.setError("please fill this form to Continue");
+        }else{
+            user userObj = new user(email, callName, age, gender, status);
+            childRef = databaseReference.child(userId);
+            childRef.setValue(userObj);
+            Intent intent = new Intent(this, CheckUser.class);
+            startActivity(intent);
+        }
     }
 
 

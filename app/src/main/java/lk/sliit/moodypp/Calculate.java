@@ -50,7 +50,7 @@ public class Calculate extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calculate);
+        setContentView(R.layout.get_emotion);
 
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
@@ -179,6 +179,13 @@ public class Calculate extends AppCompatActivity {
 
         double depressionPoint=day.getProbalityToHasDepretionUsingEmotions();
         return  depressionPoint;
+    }
+
+
+    public void veiwFeelings(View view){
+
+
+
     }
 
     public void calculate(View view){
