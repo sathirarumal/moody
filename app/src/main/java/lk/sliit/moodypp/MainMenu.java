@@ -98,7 +98,7 @@ public class MainMenu extends AppCompatActivity
     public String type;
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,13 +183,12 @@ public class MainMenu extends AppCompatActivity
         });*/
 
         initV2Chatbot();
-
-
-        //////////////////////////////////////////////////////////ONCREATE E///////////////////////////////////////////////////////////////////
+        onStartingPoint();
     }
 
-    protected void onStart() {
-        super.onStart();
+
+    protected void onStartingPoint() {
+
 
         Log.i("child","onstart Start");
 
@@ -242,6 +241,7 @@ public class MainMenu extends AppCompatActivity
                 }
             });
         }else if(type.equals("both")){
+
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("both123").setLanguageCode("en-US")).build();
             new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
 
@@ -251,6 +251,7 @@ public class MainMenu extends AppCompatActivity
             new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
         }
     }
+    ///////////////////////////////////////////////////////////////// end //////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onBackPressed() {
@@ -352,6 +353,7 @@ public class MainMenu extends AppCompatActivity
         }
 
         //check the msg of user
+        Toast.makeText(MainMenu.this, msg, Toast.LENGTH_LONG).show();
 
         if (msg.trim().isEmpty()) {
             Toast.makeText(MainMenu.this, "Please enter your message!", Toast.LENGTH_LONG).show(); }
@@ -380,7 +382,7 @@ public class MainMenu extends AppCompatActivity
             else {
 
                 showTextView(botReply, BOT);
-                //this function set the code for reply state
+                //this function set the `code for reply state
                 setCode(botReply);
             }
         }
@@ -436,8 +438,8 @@ public class MainMenu extends AppCompatActivity
             replyState="dq1";
             scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(MainMenu.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            /*InputMethodManager imm = (InputMethodManager) getSystemService(MainMenu.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);*/
 
 
         }
@@ -473,8 +475,13 @@ public class MainMenu extends AppCompatActivity
         //first time depression questions
         else if (botMsg.equals("While you have depression, do you often feel hopelessness or guilty ?"))
         {
+            replySpinner = findViewById(R.id.spinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.replyArray, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            replySpinner.setAdapter(adapter);
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
+
             replyState="fdq1";
             scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
@@ -553,12 +560,7 @@ public class MainMenu extends AppCompatActivity
             scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
 
-        else if (botMsg.equals("Do you feel Agitate in following situations.\n" +
-                "                using public transportation\n" +
-                "                Being in open spaces\n" +
-                "                Being in enclosed spaces\n" +
-                "                Standing in line or being in a crowd\n" +
-                "                Being outside of the home alone"))
+        else if (botMsg.equals("Do you feel Agitate while using public transportation or Being in open spaces or Being in enclosed spaces or Standing in line or being in a crowd or Being outside of the home alone."))
         {
 
             queryEditText.setVisibility(View.GONE);
@@ -571,6 +573,10 @@ public class MainMenu extends AppCompatActivity
         //first time anxiety questions
         else if (botMsg.equals("While you have anxiety, do you experience restlessness on the majority of days ?"))
         {
+            replySpinner = findViewById(R.id.spinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.replyArray, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            replySpinner.setAdapter(adapter);
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
             replyState="faq1";
@@ -611,12 +617,7 @@ public class MainMenu extends AppCompatActivity
             replyState ="faq6";
             scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
         }
-        else if (botMsg.equals("Do you feel Agitate in following situations.\n" +
-                "        using public transportation\n" +
-                "        Being in open spaces\n" +
-                "        Being in enclosed spaces\n" +
-                "        Standing in line or being in a crowd\n" +
-                "        Being outside of the home alone"))
+        else if (botMsg.equals("While you have anxiety, do you feel Agitate while using public transportation or Being in open spaces or Being in enclosed spaces or Standing in line or being in a crowd or Being outside of the home alone."))
         {
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
@@ -659,11 +660,12 @@ public class MainMenu extends AppCompatActivity
         {
             replyState ="awsome_reason";
         }
-        else if (botMsg.equals("Please select priority disorder to continue"))
+        else if (botMsg.equals("Please select a priority disorder to continue"))
         {
-            replyState ="selectDis";
+            Intent intent= new Intent(this,settings.class);
+            startActivity(intent);
         }
-        else if (botMsg.equals("you have depression and anxiety please select one to continue"))
+        else if (botMsg.equals("Hello welcome.. i'm MOODY.Seems like you have experience of both depression and anxiety. For further improvements of app please answer following questions before starting."))
         {
             replySpinner = findViewById(R.id.spinner);
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.firstdDeseaseArray, android.R.layout.simple_spinner_item);
@@ -672,8 +674,33 @@ public class MainMenu extends AppCompatActivity
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
 
-            replyState=replySpinner.getSelectedItem().toString();
+            String x=replySpinner.getSelectedItem().toString();
+            if(x.equals("Start with anxiety questions")){
+                replyState="go to anxiety";
+            }else{
+                replyState="go to depression";
+            }
 
+        }
+
+        else if(botMsg.equals("Hello welcome.. i'm MOODY.Seems like you have experience of depression. For further improvements of app please answer following questions before starting."))
+        {
+            replySpinner = findViewById(R.id.spinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.firstRoundDeQue, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            replySpinner.setAdapter(adapter);
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
+        }
+
+        else if(botMsg.equals("Hello welcome.. i'm MOODY.Seems like you have experience of anxiety. For further improvements of app please answer following questions before starting."))
+        {
+            replySpinner = findViewById(R.id.spinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.firstRoundAnQue, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            replySpinner.setAdapter(adapter);
+            queryEditText.setVisibility(View.GONE);
+            replySpinner.setVisibility(View.VISIBLE);
         }
 
     }
@@ -696,10 +723,9 @@ public class MainMenu extends AppCompatActivity
             {
                 return "anxiety";
             }
-            else if (reply.equals("selectDis"))
+            else if (reply.equals("go to depression"))
             {
-                Intent i= new Intent(this,settings.class);
-                startActivity(i);
+                return "gtd";
             }
             else if (reply.equals("awsome_reason"))
             {
@@ -740,6 +766,15 @@ public class MainMenu extends AppCompatActivity
                 De_Database = FirebaseDatabase.getInstance().getReference("DTR");
                 De_Database.child(userId).child(today).setValue(dqpoint);
 
+                SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharePref.edit();
+                editor.putString("status","nDep");
+                editor.putFloat("point",(float) dqpoint);
+                editor.apply();
+
+                Intent intent=new Intent(this,Calculate.class);
+                startActivity(intent);
+
                 return "dq5";
             }
 
@@ -778,6 +813,14 @@ public class MainMenu extends AppCompatActivity
 
 
                 Fde_Database.child(userId).child(today).setValue(fdqSessionObj);
+
+                SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharePref.edit();
+                editor.putString("status","fDep");
+                editor.apply();
+
+                Intent intent=new Intent(this,Calculate.class);
+                startActivity(intent);
 
                 return "fdq5";
             }
@@ -829,6 +872,15 @@ public class MainMenu extends AppCompatActivity
                 An_Database = FirebaseDatabase.getInstance().getReference("ATR");
                 An_Database.child(userId).child(today).setValue(aqpoint);
 
+                SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharePref.edit();
+                editor.putString("status","nAnx");
+                editor.putFloat("point",(float) aqpoint);
+                editor.apply();
+
+                Intent intent =new Intent(this,Calculate.class);
+                startActivity(intent);
+
                 return "aq7";
             }
 
@@ -873,8 +925,17 @@ public class MainMenu extends AppCompatActivity
                 String today=""+ date  ;
 
 
-                Fde_Database.child(userId).child(today).setValue(fdqSessionObj);
-                return "fdq7";
+                Fan_Database.child(userId).child(today).setValue(fdqSessionObj);
+
+                SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharePref.edit();
+                editor.putString("status","fAnx");
+                editor.apply();
+
+                Intent intent2=new Intent(this,Calculate.class);
+                startActivity(intent2);
+
+                return "faq7";
             }
         }
         return msg;

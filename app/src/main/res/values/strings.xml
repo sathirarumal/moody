@@ -36,13 +36,13 @@
     </string-array>
 
     <string-array name= "chooseArrayDep">
-        <item> Test Anxiety </item>
+        <item> Do Anxiety Text </item>
         <item> Listen Relaxing Music </item>
         <item> Read Positive Thinking Quotes </item>
     </string-array>
 
     <string-array name= "chooseArrayAnx">
-        <item> Test Depression </item>
+        <item> Do Depression Text </item>
         <item> Listen Relaxing Music </item>
         <item> Read Positive Thinking Quotes </item>
     </string-array>
@@ -53,8 +53,17 @@
     </string-array>
 
     <string-array name= "firstdDeseaseArray">
-        <item> Start with depression questions </item>
+        <item> Start with depression questions</item>
         <item> Start with anxiety questions</item>
     </string-array>
+
+    <string-array name= "firstRoundDeQue">
+        <item> Okay, with my plesure </item>
+    </string-array>
+
+    <string-array name= "firstRoundAnQue">
+        <item> Let us do it </item>
+    </string-array>
+
 
 </resources>
