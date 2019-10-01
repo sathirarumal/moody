@@ -133,7 +133,7 @@ public class MainMenu extends AppCompatActivity
         SharedPreferences sharePref2= PreferenceManager.getDefaultSharedPreferences(this);
         type= sharePref2.getString("userType",null);
 
-        Log.i("child",type);
+        //Log.i("child",type);
 
 
 
