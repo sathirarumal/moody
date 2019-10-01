@@ -61,9 +61,6 @@ public double ansPoint(String msg, String state)
 
 
 
-
-
-
     public double ans_points_low(String msg)
     {
         if (msg.equals("Not at all"))
@@ -73,17 +70,14 @@ public double ansPoint(String msg, String state)
         else if(msg.equals("Several days"))
         {
             return  3;
-
         }
         else if(msg.equals("More than half of the days"))
         {
             return  4;
-
         }
         else if(msg.equals("Nearly everyday"))
         {
             return  8;
-
         }
 
         return 0;
@@ -103,7 +97,6 @@ public double ansPoint(String msg, String state)
         {
             return  20;
         }
-
         return 0;
     }
 
