@@ -1,11 +1,13 @@
 package lk.sliit.moodypp;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.TextView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,31 +23,56 @@ public class Calculate extends AppCompatActivity {
 
     public FirebaseDatabase firebaseDatabase;
     public DatabaseReference userDetailRef;
-    public DatabaseReference userEmotionRef;
-    public DatabaseReference meanEmotionRef;
+
+    public DatabaseReference userEmotionFDayRef;
+    public DatabaseReference anxietyFDayRef;
+    public DatabaseReference depressionFDayRef;
+
+    public DatabaseReference meanEmotionDepRef;
+    public DatabaseReference meanEmotionANXRef;
+
+    public DatabaseReference CountRef;
     public DatabaseReference depCountRef;
+    public DatabaseReference anxCountRef;
+
     public DatabaseReference UserchildRef;
     public DatabaseReference UserEmotionchildRef;
     public DatabaseReference EmotionUserIDchildRef;
     public DatabaseReference MeanChildRef;
+
     private static final String TAG=Calculate.class.getSimpleName();
     private String userId;
     private FirebaseAuth mAuth;
     private String status;
-    private String type;
     private double meanHappyInKB;  //p(H/D)
     private double meanAngryInKB;  //p(A/D)
     private double meanSadInKB;    //p(S/D)
     private double meanNaturalInKB;//p(N/D)
+    private double meanFearInKB;   //p(F/D)
 
     private double TempmeanHappyInKB;  //p(H/D)
     private double TempmeanAngryInKB;  //p(A/D)
     private double TempmeanSadInKB;    //p(S/D)
     private double TempmeanNaturalInKB;//p(N/D)
+    private double TempmeanFearInKB;   //p(F/D)
+
 
     private EmotionFirstDay emotionFirstDay;
     private double depressionPerSample; //p(D)
 
+    public int hVal;
+    public int nVal;
+    public int sVal;
+    public int fVal;
+    public int aVal;
+
+    private double UserHappy;
+    private double UserAngry;
+    private double UserNatural;
+    private double UserFear;
+    private double UserSad;
+
+    private String meanFromKB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +80,22 @@ public class Calculate extends AppCompatActivity {
         setContentView(R.layout.get_emotion);
 
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        //depressionPerSample=(double)dataSnapshot.getChildrenCount();
+
 
         firebaseDatabase=FirebaseDatabase.getInstance();
         userDetailRef=firebaseDatabase.getReference("Users");
-        userEmotionRef=firebaseDatabase.getReference("UserEmotionsFistDay");
-        meanEmotionRef=firebaseDatabase.getReference("MeanEmotionsDepressionUsers");
-        depCountRef=firebaseDatabase.getReference("DepressionCount");
+
+        /*userEmotionFDayRef=firebaseDatabase.getReference("UserEmotionsFistDay");
+        depressionFDayRef=meanEmotionDepRef.child("Depression");
+        anxietyFDayRef=meanEmotionANXRef.child("Anxiety");*/
+
+        meanEmotionDepRef=firebaseDatabase.getReference("MeanEmotionsOfUsers");
+        meanEmotionANXRef=firebaseDatabase.getReference("MeanEmotionsAnxietyUsers");
+
+        CountRef=firebaseDatabase.getReference("PatientCount");
+        depCountRef=CountRef.child("DepressionPatientCount");
+        anxCountRef=CountRef.child("AnxietyPatientCount");
 
         mAuth= FirebaseAuth.getInstance();
         FirebaseUser user=mAuth.getCurrentUser();
@@ -66,125 +103,113 @@ public class Calculate extends AppCompatActivity {
         userId=user.getUid();
         UserchildRef=userDetailRef.child(userId);
 
+        meanFromKB="False";
 
-        /*userEmotionRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                //Log.e(dataSnapshot.getKey(),dataSnapshot.getChildrenCount() + "");
-                depressionPerSample=(double)dataSnapshot.getChildrenCount();
-                depCountRef.setValue(depressionPerSample);
-                meanAngryInKB=(TempmeanAngryInKB+emotionFirstDay.Angry)/depressionPerSample;
-                meanHappyInKB=(TempmeanHappyInKB+emotionFirstDay.Happy)/depressionPerSample;
-                meanNaturalInKB=(TempmeanNaturalInKB+emotionFirstDay.Natural)/depressionPerSample;
-                meanSadInKB=(TempmeanSadInKB+emotionFirstDay.Sad)/depressionPerSample;
 
-                Toast.makeText(Calculate.this, ""+emotionFirstDay.Angry,Toast.LENGTH_SHORT).show();
-                MeanEmotionsDepressionUsers medu=new MeanEmotionsDepressionUsers(meanHappyInKB,meanAngryInKB,meanSadInKB,meanNaturalInKB);
-                meanEmotionRef.setValue(medu);
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
+        setEmotion();
     }
 
     protected void onStart() {
         super.onStart();
-        UserchildRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user userObj=dataSnapshot.getValue(user.class);
-                status=userObj.getStatus();
-                if(status.equals("I take/taken medicine for Depression") || status.equals("I take/taken medicine for Both") ){
-                    type="Depression";
-                }else if(status.equals("I take/taken medicine for Anxiety")){
-                    type="Anxiety";
-                }else {
-                    type="Unknown";
+
+        SharedPreferences sharePref2= PreferenceManager.getDefaultSharedPreferences(this);
+        //status = sharePref2.getString("status",null);
+
+        status="nDep";
+    }
+
+
+    public void proccessDataIntoKnowledgeBase(){
+
+        if(status.equals("fDep")) { //when first time depression
+
+            depCountRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    int tempCount=dataSnapshot.getValue(Integer.class);
+                    int total=tempCount+1;
+                    depCountRef.setValue(total);
                 }
 
-                insertDumyData();
-                //SetMeanEmotionsDepressionUsers();
-                //addEmotionsToKnowledgeBase();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void insertDumyData(){
-
-        emotionFirstDay =new EmotionFirstDay(0.80,0.1,0.5,0.5);
-        UserEmotionchildRef=userEmotionRef.child(type);
-        EmotionUserIDchildRef=UserEmotionchildRef.child(userId);
-        EmotionUserIDchildRef.setValue(emotionFirstDay);
-    }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
 
-    public void SetMeanEmotionsDepressionUsers(){
-                meanEmotionRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        MeanEmotionsDepressionUsers meanEmotionsDepressionUsers = dataSnapshot.getValue(MeanEmotionsDepressionUsers.class);
+                }
+            });
 
-                        TempmeanAngryInKB = meanEmotionsDepressionUsers.getMeanAngryInKB();
-                        TempmeanHappyInKB = meanEmotionsDepressionUsers.getMeanHappyInKB();
-                        TempmeanNaturalInKB = meanEmotionsDepressionUsers.getMeanNaturalInKB();
-                        TempmeanSadInKB = meanEmotionsDepressionUsers.getMeanSadInKB();
 
+            meanEmotionDepRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                MeanEmotionsOfUsers Mean=dataSnapshot.getValue(MeanEmotionsOfUsers.class);
+                    if(Mean == null){
+                        meanEmotionDepRef.setValue(new MeanEmotionsOfUsers(UserHappy,UserAngry,UserSad,UserNatural,UserFear));
+                    }else{
+                        TempmeanAngryInKB=(Mean.getMeanAngryInKB() + UserHappy)/2;
+                        TempmeanFearInKB=(Mean.getMeanFearInKB() + UserFear)/2;
+                        TempmeanHappyInKB=(Mean.getMeanHappyInKB() + UserHappy)/2;
+                        TempmeanNaturalInKB=(Mean.getMeanNaturalInKB() + UserNatural)/2;
+                        TempmeanSadInKB=(Mean.getMeanSadInKB() + UserSad)/2;
+
+                        meanEmotionDepRef.setValue(new MeanEmotionsOfUsers(TempmeanAngryInKB,TempmeanAngryInKB,TempmeanSadInKB,TempmeanNaturalInKB,TempmeanFearInKB));
                     }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }else if(status.equals("fAnx")){ //when first time anxiety
+
+            anxCountRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    int tempCount=dataSnapshot.getValue(Integer.class);
+                    int total=tempCount+1;
+                    anxCountRef.setValue(total);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+            meanEmotionANXRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    MeanEmotionsOfUsers Mean=dataSnapshot.getValue(MeanEmotionsOfUsers.class);
+                    if(Mean == null){
+                        meanEmotionDepRef.setValue(new MeanEmotionsOfUsers(UserHappy,UserAngry,UserSad,UserNatural,UserFear));
+                    }else{
+                        TempmeanAngryInKB=(Mean.getMeanAngryInKB() + UserHappy)/2;
+                        TempmeanFearInKB=(Mean.getMeanFearInKB() + UserFear)/2;
+                        TempmeanHappyInKB=(Mean.getMeanHappyInKB() + UserHappy)/2;
+                        TempmeanNaturalInKB=(Mean.getMeanNaturalInKB() + UserNatural)/2;
+                        TempmeanSadInKB=(Mean.getMeanSadInKB() + UserSad)/2;
+
+                        meanEmotionDepRef.setValue(new MeanEmotionsOfUsers(TempmeanAngryInKB,TempmeanAngryInKB,TempmeanSadInKB,TempmeanNaturalInKB,TempmeanFearInKB));
                     }
-                });
 
-    }
+                }
 
-    public double proccessDepressionPerDay(double happy,double angry,double sad,double natural){
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-        DepressionAlgo day=new DepressionAlgo();
+                }
+            });
 
-        day.setMeanAngryInKB(meanAngryInKB);
-        day.setMeanHappyInKB(meanHappyInKB);
-        day.setMeanNaturalInKB(meanNaturalInKB);
-        day.setMeanSadInKB(meanSadInKB);
-        day.setDepressionPerSample(depressionPerSample);
-        day.setUserAngryPerDay(angry);
-        day.setUserHappyPerDay(happy);
-        day.setUserSadPerDay(sad);
-        day.setUserNaturalPerDay(natural);
-
-        double depressionPoint=day.getProbalityToHasDepretionUsingEmotions();
-        return  depressionPoint;
-    }
-
-
-    public void veiwFeelings(View view){
-
-
+        }
 
     }
 
@@ -203,23 +228,165 @@ public class Calculate extends AppCompatActivity {
         Double ua=Double.parseDouble(editText2.getText().toString());
         Double us=Double.parseDouble(editText3.getText().toString());
         Double un=Double.parseDouble(editText4.getText().toString());
-        Double Dep=Double.parseDouble(editText5.getText().toString());
+        Double dis=Double.parseDouble(editText5.getText().toString());
 
-        DepressionAlgo day=new DepressionAlgo();
+        daProbabilityAlgorithm day=new daProbabilityAlgorithm();
 
-        day.setMeanAngryInKB(0.3);
-        day.setMeanHappyInKB(0.5);
-        day.setMeanNaturalInKB(0.15);
-        day.setMeanSadInKB(0.5);
-        day.setDepressionPerSample(Dep);
+        day.setDisoderPerSample(dis);
         day.setUserAngryPerDay(ua);
         day.setUserHappyPerDay(uh);
         day.setUserSadPerDay(us);
         day.setUserNaturalPerDay(un);
 
-        double depressionPoint=day.getProbalityToHasDepretionUsingEmotions();
+        double disoderPoint=day.getProbalityToHavingDisoderUsingEmotions();
 
-        resultBox.setText(""+depressionPoint);
+        resultBox.setText(""+disoderPoint);
+    }
+
+    public void setEmotion(){
+
+        SeekBar hBar= findViewById(R.id.hbar);
+        SeekBar nBar= findViewById(R.id.nbar);
+        SeekBar sBar= findViewById(R.id.sbar);
+        SeekBar fBar= findViewById(R.id.fbar);
+        SeekBar aBar= findViewById(R.id.abar);
+
+        hBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                hVal=progress;
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //write custom code to on start progress
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        nBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                 nVal=progress;
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //write custom code to on start progress
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                 sVal=progress;
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //write custom code to on start progress
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        fBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                 fVal=progress;
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //write custom code to on start progress
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        aBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                 aVal=progress;
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //write custom code to on start progress
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+    }
+
+    public void cal(View view){
+
+        double total=aVal+hVal+nVal+sVal+fVal;
+
+        UserHappy=hVal/total;
+        UserAngry=aVal/total;
+        UserFear=fVal/total;
+        UserNatural=nVal/total;
+        UserSad=sVal/total;
+
+
+     if(status.equals("nDep") || status.equals("nAnx") ) {
+
+         daProbabilityAlgorithm day = new daProbabilityAlgorithm();
+
+         day.setUserAngryPerDay(UserAngry);
+         day.setUserFearPerDay(UserFear);
+         day.setUserHappyPerDay(UserHappy);
+         day.setUserNaturalPerDay(UserNatural);
+         day.setUserSadPerDay(UserSad);
+
+         if (meanFromKB.equals("False")) {
+             day.setMeanAngryInKB(0.3);
+             day.setMeanHappyInKB(0.05);
+             day.setMeanNaturalInKB(0.15);
+             day.setMeanSadInKB(0.5);
+
+             if (status.equals("nDep")) {
+                 day.setDisoderPerSample(0.8);//get From rashini
+             } else if (status.equals("nAnx")) {
+                 day.setDisoderPerSample(0.4);
+             }
+
+         } else {
+             day.setMeanAngryInKB(meanAngryInKB);
+             day.setMeanHappyInKB(meanHappyInKB);
+             day.setMeanNaturalInKB(meanNaturalInKB);
+             day.setMeanSadInKB(meanSadInKB);
+
+             if (status.equals("nDep")) {
+                 day.setDisoderPerSample(0.5);
+             } else if (status.equals("nAnx")) {
+                 day.setDisoderPerSample(0.4);
+             }
+         }
+
+       double dqResult=day.getProbalityToHavingDisoderUsingEmotions();
+       String x=""+dqResult;
+
+         Toast.makeText(Calculate.this, x,
+                 Toast.LENGTH_SHORT).show();
+     }else{
+         proccessDataIntoKnowledgeBase();
+     }
+
+
     }
 
 }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/sbar"
         android:layout_width="296dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <SeekBar
-        android:id="@+id/seekBar4"
+        android:id="@+id/fbar"
         android:layout_width="296dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
     <SeekBar
-        android:id="@+id/seekBar5"
+        android:id="@+id/abar"
         android:layout_width="296dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <SeekBar
-        android:id="@+id/seekBar3"
+        android:id="@+id/nbar"
         android:layout_width="296dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <SeekBar
-        android:id="@+id/seekBar2"
+        android:id="@+id/hbar"
         android:layout_width="296dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
@@ -66,16 +66,18 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/but"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="8dp"
-        android:text="Button"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="cal"
+        android:text="Calculate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar5"
+        app:layout_constraintTop_toBottomOf="@+id/abar"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -88,7 +90,7 @@
         android:text="Nutral"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
+        app:layout_constraintTop_toBottomOf="@+id/hbar" />
 
     <TextView
         android:id="@+id/textView7"
@@ -100,7 +102,7 @@
         android:text="Angry"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar4" />
+        app:layout_constraintTop_toBottomOf="@+id/fbar" />
 
     <TextView
         android:id="@+id/textView9"
@@ -112,7 +114,7 @@
         android:text="Fear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+        app:layout_constraintTop_toBottomOf="@+id/sbar" />
 
     <TextView
         android:id="@+id/textView8"
@@ -124,7 +126,7 @@
         android:text="Sad"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar3" />
+        app:layout_constraintTop_toBottomOf="@+id/nbar" />
 
     <TextView
         android:id="@+id/textView4"
@@ -143,9 +145,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="8dp"
         android:text="what are the presentages of your feelings today"
+        android:textColor="@color/navBarText"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
