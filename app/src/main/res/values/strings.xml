@@ -8,17 +8,17 @@
     </string-array>
 
     <string-array name="StatusArray">
-        <item>I take/taken medicine for Depression</item>
-        <item>I take/taken medicine for Anxiety</item>
-        <item>I take/taken medicine for Both</item>
-        <item>I do not know if have Both</item>
+        <item>I take/took medicine for Depression</item>
+        <item>I take/took medicine for Anxiety</item>
+        <item>I take/took medicine for Both</item>
+        <item>I do not know if I have Both</item>
     </string-array>
 
 
     <string name="title_activity_main_menu" tools:ignore="ExtraTranslation">MainMenu</string>
     <string name="navigation_drawer_open" tools:ignore="ExtraTranslation">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">MOODY : Pocket Psychiatrist</string>
+    <string name="nav_header_title">Pocket Psychiatrist</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -36,13 +36,48 @@
         <item> Several days </item>
         <item> More than half of the days </item>
         <item> Nearly everyday </item>
-
     </string-array>
 
-    <string-array name="chooseArray">
-        <item> Listen Relaxing Music  </item>
+    <string-array name="chooseArrayDep">
+        <item> Do Anxiety Text </item>
+        <item> Listen Relaxing Music </item>
         <item> Read Positive Thinking Quotes </item>
+    </string-array>
 
+
+    <string-array name="chooseArrayAnx">
+        <item> Do Depression Text </item>
+        <item> Listen Relaxing Music </item>
+        <item> Read Positive Thinking Quotes </item>
+    </string-array>
+
+    <string-array name="deseaseArray">
+        <item> depression  </item>
+        <item> anxiety </item>
+    </string-array>
+
+    <string-array name="firstdDeseaseArray">
+        <item> Start with depression questions</item>
+        <item> Start with anxiety questions</item>
+    </string-array>
+
+    <string-array name="firstRoundDeQue">
+        <item> Okay, with my plesure </item>
+    </string-array>
+
+    <string-array name="firstRoundAnQue">
+        <item> Let us do it </item>
+    </string-array>
+
+    <string-array name="onOff">
+        <item> on </item>
+        <item> off </item>
+    </string-array>
+
+    <string-array name="sosOption">
+        <item> SOS message </item>
+        <item> SOS call </item>
+        <item> Deactivate </item>
     </string-array>
 
 </resources>

@@ -14,12 +14,12 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="53dp"
-        android:layout_height="wrap_content"
+        android:layout_width="238dp"
+        android:layout_height="71dp"
         android:layout_gravity="top|start"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/icons8_bot" />
+        app:srcCompat="@mipmap/graylogo" />
 
     <TextView
         android:layout_width="match_parent"

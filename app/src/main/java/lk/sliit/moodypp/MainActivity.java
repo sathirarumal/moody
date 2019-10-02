@@ -1,6 +1,8 @@
 package lk.sliit.moodypp;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.collection.LLRBNode;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,40 +83,45 @@ public class MainActivity extends AppCompatActivity {
         email=emailText.getText().toString();
         password=pwText.getText().toString();
 
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
+        if(email.isEmpty()){
+            emailText.setError("Please Enter an email");
 
-                            FirebaseUser user = mAuth.getCurrentUser(); //get user
+        }else if(password.isEmpty()){
+            pwText.setError("Please Enter your password");
 
-                            //save mAuth to SharedPreferences
+        }else if(password.length() < 7){
 
-                            /*SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                            Gson gson = new Gson();
-                            String userJson = gson.toJson(user);
-                            prefsEditor.putString("user", userJson);
-                            prefsEditor.apply();*/
+            pwText.setError("Please Enter password minimum of 8 Characters");
 
-                            //update UI according to user
-                            updateUI(user);
-                            //go to basic quection page
-                            goBasicQuestionPage();
+        }else {
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "createUserWithEmail:success");
+
+                                FirebaseUser user = mAuth.getCurrentUser(); //get user
+
+                                //update UI according to user
+                                updateUI(user);
+                                //go to basic quection page
+                                goBasicQuestionPage();
+
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(MainActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                //updateUI(null);
+                            }
+
+                            // ...
                         }
-
-                        // ...
-                    }
-                });
+                    });
+        }
     }
 
     public void signIn(View view) {
@@ -121,25 +129,40 @@ public class MainActivity extends AppCompatActivity {
         email=emailText.getText().toString();
         password=pwText.getText().toString();
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
+        if(email.isEmpty()){
+            emailText.setError("Please Enter an email");
 
-                    }
-                });
+        }else if(password.isEmpty()){
+            pwText.setError("Please Enter your password");
+
+        }else if(password.length() < 7){
+
+            pwText.setError("Please Enter password minimum of 8 Characters");
+
+        }else{
+
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                updateUI(user);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(MainActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                updateUI(null);
+                            }
+
+                        }
+                    });
+        }
+
+
     }
 
     private void updateUI(FirebaseUser user) {
@@ -148,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         }else {
             Intent intent=new Intent(this, CheckUser.class);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -155,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent=new Intent(this, CheckUser.class);
         startActivity(intent);
+        finish();
     }
 
     public void goGoogleSignIn(View view){

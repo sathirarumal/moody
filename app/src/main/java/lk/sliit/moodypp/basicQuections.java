@@ -1,6 +1,9 @@
 package lk.sliit.moodypp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +38,7 @@ public class basicQuections extends AppCompatActivity {
     private Spinner statusSpinner;
     private EditText callNameText;
     private EditText ageText;
+    public String type;
 
 
     @Override
@@ -67,7 +71,6 @@ public class basicQuections extends AppCompatActivity {
             heyText.setText("Hey " + name);
         }
 
-
         // gender spinner
         genderSpinner = (Spinner) findViewById(R.id.genderspin);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.GenderArray, android.R.layout.simple_spinner_item);
@@ -89,6 +92,31 @@ public class basicQuections extends AppCompatActivity {
         status=statusSpinner.getSelectedItem().toString();
         gender=genderSpinner.getSelectedItem().toString();
 
+
+        if(callName.isEmpty()){
+            callNameText.setError("please fill this form to Continue");
+        }else if(age.isEmpty()){
+            ageText.setError("please fill this form to Continue");
+        }else{
+       
+            if (status.equals("I take/took medicine for Depression")) {
+              type = "depression";
+            } else if (status.equals("I take/took medicine for Anxiety")) {
+              type = "anxiety";
+            }else if(status.equals("I take/took medicine for Both")){
+              type = "both";
+            }else {
+              type = "don't know";
+            }
+
+        SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharePref.edit();
+        editor.putString("userType",type);
+        editor.putString("sos","Deactivate");
+        editor.putString("kb","off");
+        editor.putString("disorder","depression");
+        editor.apply();
+
         user userObj=new user(email,callName,age,gender,status);
 
         childRef=databaseReference.child(userId);
@@ -96,6 +124,10 @@ public class basicQuections extends AppCompatActivity {
 
         Intent intent=new Intent(this, CheckUser.class);
         startActivity(intent);
+
+        finish();
+        }  
+
     }
 
 
