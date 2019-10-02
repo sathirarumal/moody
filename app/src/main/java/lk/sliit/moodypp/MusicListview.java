@@ -65,7 +65,7 @@ public class MusicListview extends AppCompatActivity {
 
     //connect to firebasestep1
     public  void gonewlist(View view){
-        Intent intent=new Intent(this,graphView2.class);
+        Intent intent=new Intent(this,audiodownload.class);
         startActivity(intent);
     }
 
