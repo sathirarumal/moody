@@ -270,7 +270,7 @@ public class MainMenu extends AppCompatActivity
         if (id == R.id.dep) {
             goDep();
         } else if (id == R.id.anx) {
-
+            goAnx();
         } else if (id == R.id.rel) {
             goRel();
         } else if (id == R.id.set) {
@@ -298,7 +298,7 @@ public class MainMenu extends AppCompatActivity
     }
 
     public void goDep(){
-        Intent intent=new Intent(this,Calculate.class);
+        Intent intent=new Intent(this,depGraph.class);
         startActivity(intent);
     }
 
@@ -307,6 +307,10 @@ public class MainMenu extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void goAnx(){
+        Intent intent=new Intent(this,anxietyGraph.class);
+        startActivity(intent);
+    }
 
 
 

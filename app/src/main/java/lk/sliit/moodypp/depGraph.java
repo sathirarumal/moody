@@ -19,7 +19,7 @@ import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 
-public class graphView2<i> extends AppCompatActivity {
+public class depGraph<i> extends AppCompatActivity {
 
     LineChartView lineChartView;
 
