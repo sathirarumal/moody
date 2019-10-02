@@ -10,9 +10,8 @@
     <color name="navBaritem">#373A3A</color>
     <color name ="colorBot"> #B7F0F1 </color>
     <color name="colorUser"> #99D5A8 </color>
+    <color name="colorgraph"> #03A9F4 </color>
     <color name="whiteButton">#FFFFFF</color>
     <color name="errorColor">#DD0928</color>
-
-
 
 </resources>

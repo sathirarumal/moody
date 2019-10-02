@@ -16,7 +16,7 @@
 
 
     <string name="title_activity_main_menu" tools:ignore="ExtraTranslation">MainMenu</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_open" tools:ignore="ExtraTranslation">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Pocket Psychiatrist</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -27,6 +27,9 @@
     <string name="rel">Relaxation Unit</string>
     <string name="set">Settings</string>
     <string name="sout">Sign Out</string>
+    <string name="Songlistview">songList[position]</string>
+    <string name="URL">Download this Music audio to take as mind relaxation
+        on:https://stackoverflow.com/questions/39180901/download-audio-from-firebase-storage</string>
 
     <string-array name="replyArray">
         <item> Not at all </item>
@@ -40,6 +43,7 @@
         <item> Listen Relaxing Music </item>
         <item> Read Positive Thinking Quotes </item>
     </string-array>
+
 
     <string-array name="chooseArrayAnx">
         <item> Do Depression Text </item>
