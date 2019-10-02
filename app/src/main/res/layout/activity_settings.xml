@@ -37,7 +37,7 @@
                 />
 
             <View style="@style/Divider" />
-
+<!--user details-->
             <TextView
                 android:id="@+id/bd"
                 android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                 android:textSize="20sp"
                 android:onClick="loadUserLayout"
                 />
-<!--user details-->
+
             <LinearLayout
                 android:id="@+id/userDetails"
                 android:layout_width="match_parent"
@@ -120,47 +120,11 @@
 
                 <View style="@style/Divider" />
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Extended Details"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/pnumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="12dp"
-                    android:background="@color/insertTab"
-                    android:ems="10"
-                    android:hint="Enter phone number"
-                    android:inputType="textPersonName"
-                    android:textAlignment="center" />
-
-                <View style="@style/Divider" />
-
-                <EditText
-                    android:id="@+id/marriage"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="12dp"
-                    android:background="@color/insertTab"
-                    android:ems="10"
-                    android:hint="Enter marriage status"
-                    android:inputType="textPersonName"
-                    android:textAlignment="center" />
 
             </LinearLayout>
 
             <View style="@style/Divider" />
-
+<!--SOS-->
             <TextView
                 android:id="@+id/sos"
                 android:layout_width="match_parent"
@@ -171,57 +135,145 @@
                 android:layout_marginEnd="8dp"
                 android:text="SOS settings"
                 android:textSize="20sp"
+                android:onClick="loadSOSLayout"
                 />
-<!--SOS-->
+
             <LinearLayout
             android:id="@+id/sosmenu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-        </LinearLayout>
+
+                <EditText
+                    android:id="@+id/pnumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/insertTab"
+                    android:ems="10"
+                    android:hint="Enter Your phone number"
+                    android:inputType="number"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/Tpnumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/insertTab"
+                    android:ems="10"
+                    android:hint="Enter PhoneNo of trust Person"
+                    android:inputType="number"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/tname"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/insertTab"
+                    android:ems="10"
+                    android:hint="how do you call her/him"
+                    android:inputType="textPersonName"
+                    android:textAlignment="center" />
+
+                <Spinner
+                    android:id="@+id/sosAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/insertTab"
+                    android:hint="kb"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
 
             <View style="@style/Divider" />
-
+<!--Disorder Selection-->
             <TextView
-                android:id="@+id/storage"
+                android:id="@+id/priority"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="15dp"
-                android:text="Storage Selection"
+                android:text="Select priority disorder"
+                android:onClick="loadDisorderLayout"
                 android:textSize="20sp" />
-<!--Storage-->
+
             <LinearLayout
-                android:id="@+id/storageMenu"
+                android:id="@+id/disorder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <Spinner
+                    android:id="@+id/disSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/insertTab"
+                    android:hint="priority"
+                    android:textAlignment="center" />
+
             </LinearLayout>
 
             <View style="@style/Divider" />
-
+<!--Kb-->
             <TextView
-                android:id="@+id/Access"
+                android:id="@+id/kbSelect"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="15dp"
-                android:text="Access Permission"
+                android:text="Use Knowledge Base(Beta)"
+                android:onClick="loadKBLayout"
                 android:textSize="20sp" />
-<!--permission-->
+
             <LinearLayout
-                android:id="@+id/permissionMenu"
+                android:id="@+id/kbmenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <Spinner
+                    android:id="@+id/kbSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/insertTab"
+                    android:hint="kb"
+                    android:textAlignment="center" />
+
             </LinearLayout>
+
+            <View style="@style/Divider" />
+            <!--Kb-->
+            <TextView
+                android:id="@+id/reset"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="15dp"
+                android:text="Reset Settings to default"
+                android:textColor="@color/errorColor"
+                android:onClick="resetDefault"
+                android:textSize="20sp" />
+
+            <View style="@style/Divider" />
+
 
         </LinearLayout>
 

@@ -48,13 +48,13 @@ public class botTrainer {
 
 public double ansPoint(String msg, String state)
 {
-    if(state == "low")
+    if(state.equals("low"))
     {
-        ans_points_low(msg);
+        return ans_points_low(msg);
     }
-    else if (state == "high")
+    else if (state.equals("high"))
     {
-        ans_points_high(msg);
+        return ans_points_high(msg);
     }
     return 0;
 }
@@ -69,11 +69,11 @@ public double ansPoint(String msg, String state)
         }
         else if(msg.equals("Several days"))
         {
-            return  3;
+            return  4;
         }
         else if(msg.equals("More than half of the days"))
         {
-            return  4;
+            return  6;
         }
         else if(msg.equals("Nearly everyday"))
         {

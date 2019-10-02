@@ -112,6 +112,9 @@ public class basicQuections extends AppCompatActivity {
         SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharePref.edit();
         editor.putString("userType",type);
+        editor.putString("sos","Deactivate");
+        editor.putString("kb","off");
+        editor.putString("disorder","depression");
         editor.apply();
 
         user userObj=new user(email,callName,age,gender,status);
@@ -121,6 +124,8 @@ public class basicQuections extends AppCompatActivity {
 
         Intent intent=new Intent(this, CheckUser.class);
         startActivity(intent);
+
+        finish();
         }  
 
     }
