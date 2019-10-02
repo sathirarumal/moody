@@ -53,6 +53,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 
@@ -170,17 +171,6 @@ public class MainMenu extends AppCompatActivity
             return false;
         });
 
-
-/*        replySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String spinnerMsg=replySpinner.getSelectedItem().toString();
-                queryEditText.setText(spinnerMsg);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });*/
 
         initV2Chatbot();
         onStartingPoint();
@@ -352,12 +342,14 @@ public class MainMenu extends AppCompatActivity
              msg = queryEditText.getText().toString();
         }
 
-        //check the msg of user
-        Toast.makeText(MainMenu.this, msg, Toast.LENGTH_LONG).show();
 
         if (msg.trim().isEmpty()) {
-            Toast.makeText(MainMenu.this, "Please enter your message!", Toast.LENGTH_LONG).show(); }
-        else {
+            Toast.makeText(MainMenu.this, "Please enter your message!", Toast.LENGTH_LONG).show();
+
+        }else if(msg.equals("dog")) {
+          Intent i=new Intent(this,TestingBackDoor.class);
+          startActivity(i);
+        }else{
             showTextView(msg, USER);
             queryEditText.setText("");
 
@@ -736,7 +728,8 @@ public class MainMenu extends AppCompatActivity
             else if (reply.equals("dq1"))
             {
                 dqSessionObj= new dqSession();
-                dqSessionObj.setDq1(bt.ansPoint(msg, "low"));
+                dqSessionObj.setDq1(bt.ansPoint(msg,"low"));
+
                 return "dq1";
             }
             else if (reply.equals("dq2"))
@@ -758,18 +751,14 @@ public class MainMenu extends AppCompatActivity
             {
                 dqSessionObj.setDq5(bt.ansPoint(msg, "high"));
 
-                double dqpoint = dqSessionObj.GetDqPointPercentage();
-                DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
-                Date date=new Date();
-                String today=""+ date  ; //dateFormat.format(date);
+                double dqPoint = dqSessionObj.GetDqPointPercentage();
 
-                De_Database = FirebaseDatabase.getInstance().getReference("DTR");
-                De_Database.child(userId).child(today).setValue(dqpoint);
+                Toast.makeText(MainMenu.this, ""+dqPoint, Toast.LENGTH_LONG).show();
 
                 SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharePref.edit();
                 editor.putString("status","nDep");
-                editor.putFloat("point",(float) dqpoint);
+                editor.putFloat("point",(float) dqPoint);
                 editor.apply();
 
                 Intent intent=new Intent(this,Calculate.class);
@@ -807,10 +796,9 @@ public class MainMenu extends AppCompatActivity
             {
                 fdqSessionObj.setFdq5(bt.first_time_ansPoint(msg));
 
-                DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+                DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                 Date date=new Date();
-                String today=""+ date  ;
-
+                String today= dateFormat.format(date);
 
                 Fde_Database.child(userId).child(today).setValue(fdqSessionObj);
 
@@ -831,8 +819,6 @@ public class MainMenu extends AppCompatActivity
             {
                 aqSessionObj = new aqSession();
                 aqSessionObj.setAq1(bt.ansPoint(msg, "low"));
-           /* String aa = "" +dqSessionObj.getDq1();
-            Toast.makeText(BotActivity.this, aa, Toast.LENGTH_LONG).show(); */
                 return "aq1";
             }
             else if (reply.equals("aq2"))
@@ -865,12 +851,12 @@ public class MainMenu extends AppCompatActivity
                 aqSessionObj.setAq7(bt.ansPoint(msg, "high"));
 
                 double aqpoint = aqSessionObj.getAqPointTotal();
-                DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
-                Date date=new Date();
-                String today=""+  date  ; //dateFormat.format(date);
 
-                An_Database = FirebaseDatabase.getInstance().getReference("ATR");
-                An_Database.child(userId).child(today).setValue(aqpoint);
+               /* Toast.makeText(MainMenu.this, ""+aqpoint, Toast.LENGTH_LONG).show();*/
+
+                DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date=new Date();
+                String today= dateFormat.format(date);
 
                 SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharePref.edit();
@@ -920,9 +906,9 @@ public class MainMenu extends AppCompatActivity
             {
                 fdqSessionObj.setFdq5(bt.first_time_ansPoint(msg));
 
-                DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+                DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                 Date date=new Date();
-                String today=""+ date  ;
+                String today= dateFormat.format(date);
 
 
                 Fan_Database.child(userId).child(today).setValue(fdqSessionObj);

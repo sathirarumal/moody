@@ -19,6 +19,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Calculate extends AppCompatActivity {
 
     public FirebaseDatabase firebaseDatabase;
@@ -39,6 +44,10 @@ public class Calculate extends AppCompatActivity {
     public DatabaseReference UserEmotionchildRef;
     public DatabaseReference EmotionUserIDchildRef;
     public DatabaseReference MeanChildRef;
+
+    public DatabaseReference DTR_Reference;
+    public DatabaseReference ATR_Reference;
+
 
     private static final String TAG=Calculate.class.getSimpleName();
     private String userId;
@@ -73,6 +82,13 @@ public class Calculate extends AppCompatActivity {
     private double UserSad;
 
     private String meanFromKB;
+    private double pointFromChatTest;
+
+    public SeekBar hBar;
+    public SeekBar nBar;
+    public SeekBar sBar;
+    public SeekBar fBar;
+    public SeekBar aBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +96,12 @@ public class Calculate extends AppCompatActivity {
         setContentView(R.layout.get_emotion);
 
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        //depressionPerSample=(double)dataSnapshot.getChildrenCount();
 
+        aVal=1;
+        sVal=1;
+        nVal=1;
+        fVal=1;
+        hVal=1;
 
         firebaseDatabase=FirebaseDatabase.getInstance();
         userDetailRef=firebaseDatabase.getReference("Users");
@@ -90,12 +110,8 @@ public class Calculate extends AppCompatActivity {
         depressionFDayRef=meanEmotionDepRef.child("Depression");
         anxietyFDayRef=meanEmotionANXRef.child("Anxiety");*/
 
-        meanEmotionDepRef=firebaseDatabase.getReference("MeanEmotionsOfUsers");
-        meanEmotionANXRef=firebaseDatabase.getReference("MeanEmotionsAnxietyUsers");
-
-        CountRef=firebaseDatabase.getReference("PatientCount");
-        depCountRef=CountRef.child("DepressionPatientCount");
-        anxCountRef=CountRef.child("AnxietyPatientCount");
+        meanEmotionDepRef=firebaseDatabase.getReference("MeanEmotionsOfDepressionUsers");
+        meanEmotionANXRef=firebaseDatabase.getReference("MeanEmotionsOfAnxietyUsers");
 
         mAuth= FirebaseAuth.getInstance();
         FirebaseUser user=mAuth.getCurrentUser();
@@ -103,20 +119,65 @@ public class Calculate extends AppCompatActivity {
         userId=user.getUid();
         UserchildRef=userDetailRef.child(userId);
 
-        meanFromKB="False";
-
-
-
         setEmotion();
+
     }
 
     protected void onStart() {
         super.onStart();
 
         SharedPreferences sharePref2= PreferenceManager.getDefaultSharedPreferences(this);
-        //status = sharePref2.getString("status",null);
+        status = sharePref2.getString("status",null);
+        meanFromKB = sharePref2.getString("kb",null);
+        float point = sharePref2.getFloat("point",0);
 
-        status="nDep";
+        pointFromChatTest=(double)point;
+
+      if(status.equals("nDep")) {
+          meanEmotionDepRef.addValueEventListener(new ValueEventListener() {
+              @Override
+              public void onDataChange(DataSnapshot dataSnapshot) {
+
+                  MeanEmotionsOfUsers Mean = dataSnapshot.getValue(MeanEmotionsOfUsers.class);
+                  if (Mean != null) {
+
+                        meanHappyInKB =Mean.meanHappyInKB;
+                        meanAngryInKB =Mean.meanAngryInKB;
+                        meanSadInKB =Mean.meanSadInKB;
+                        meanNaturalInKB =Mean.meanNaturalInKB;
+                        meanFearInKB =Mean.meanFearInKB;
+
+                  }
+              }
+
+              @Override
+              public void onCancelled(DatabaseError databaseError) {
+
+              }
+          });
+      }else if(status.equals("nAnx")) {
+          meanEmotionANXRef.addValueEventListener(new ValueEventListener() {
+              @Override
+              public void onDataChange(DataSnapshot dataSnapshot) {
+
+                  MeanEmotionsOfUsers Mean = dataSnapshot.getValue(MeanEmotionsOfUsers.class);
+                  if (Mean != null) {
+
+                      meanHappyInKB =Mean.meanHappyInKB;
+                      meanAngryInKB =Mean.meanAngryInKB;
+                      meanSadInKB =Mean.meanSadInKB;
+                      meanNaturalInKB =Mean.meanNaturalInKB;
+                      meanFearInKB =Mean.meanFearInKB;
+                  }
+
+              }
+
+              @Override
+              public void onCancelled(DatabaseError databaseError) {
+
+              }
+          });
+      }
     }
 
 
@@ -124,67 +185,8 @@ public class Calculate extends AppCompatActivity {
 
         if(status.equals("fDep")) { //when first time depression
 
-            depCountRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    int tempCount=dataSnapshot.getValue(Integer.class);
-                    int total=tempCount+1;
-                    depCountRef.setValue(total);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-
-                }
-            });
-
 
             meanEmotionDepRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                MeanEmotionsOfUsers Mean=dataSnapshot.getValue(MeanEmotionsOfUsers.class);
-                    if(Mean == null){
-                        meanEmotionDepRef.setValue(new MeanEmotionsOfUsers(UserHappy,UserAngry,UserSad,UserNatural,UserFear));
-                    }else{
-                        TempmeanAngryInKB=(Mean.getMeanAngryInKB() + UserHappy)/2;
-                        TempmeanFearInKB=(Mean.getMeanFearInKB() + UserFear)/2;
-                        TempmeanHappyInKB=(Mean.getMeanHappyInKB() + UserHappy)/2;
-                        TempmeanNaturalInKB=(Mean.getMeanNaturalInKB() + UserNatural)/2;
-                        TempmeanSadInKB=(Mean.getMeanSadInKB() + UserSad)/2;
-
-                        meanEmotionDepRef.setValue(new MeanEmotionsOfUsers(TempmeanAngryInKB,TempmeanAngryInKB,TempmeanSadInKB,TempmeanNaturalInKB,TempmeanFearInKB));
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-        }else if(status.equals("fAnx")){ //when first time anxiety
-
-            anxCountRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    int tempCount=dataSnapshot.getValue(Integer.class);
-                    int total=tempCount+1;
-                    anxCountRef.setValue(total);
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-
-            meanEmotionANXRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -198,7 +200,35 @@ public class Calculate extends AppCompatActivity {
                         TempmeanNaturalInKB=(Mean.getMeanNaturalInKB() + UserNatural)/2;
                         TempmeanSadInKB=(Mean.getMeanSadInKB() + UserSad)/2;
 
-                        meanEmotionDepRef.setValue(new MeanEmotionsOfUsers(TempmeanAngryInKB,TempmeanAngryInKB,TempmeanSadInKB,TempmeanNaturalInKB,TempmeanFearInKB));
+                        meanEmotionDepRef.setValue(new MeanEmotionsOfUsers(TempmeanHappyInKB,TempmeanAngryInKB,TempmeanSadInKB,TempmeanNaturalInKB,TempmeanFearInKB));
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }else if(status.equals("fAnx")){ //when first time anxiety
+
+
+            meanEmotionANXRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    MeanEmotionsOfUsers Mean=dataSnapshot.getValue(MeanEmotionsOfUsers.class);
+                    if(Mean == null){
+                        meanEmotionANXRef.setValue(new MeanEmotionsOfUsers(UserHappy,UserAngry,UserSad,UserNatural,UserFear));
+                    }else{
+                        TempmeanAngryInKB=(Mean.getMeanAngryInKB() + UserHappy)/2;
+                        TempmeanFearInKB=(Mean.getMeanFearInKB() + UserFear)/2;
+                        TempmeanHappyInKB=(Mean.getMeanHappyInKB() + UserHappy)/2;
+                        TempmeanNaturalInKB=(Mean.getMeanNaturalInKB() + UserNatural)/2;
+                        TempmeanSadInKB=(Mean.getMeanSadInKB() + UserSad)/2;
+
+                        meanEmotionANXRef.setValue(new MeanEmotionsOfUsers(TempmeanHappyInKB,TempmeanAngryInKB,TempmeanSadInKB,TempmeanNaturalInKB,TempmeanFearInKB));
                     }
 
                 }
@@ -211,45 +241,18 @@ public class Calculate extends AppCompatActivity {
 
         }
 
+        finish();
     }
 
-    public void calculate(View view){
 
-        //double result=proccessDepressionPerDay(0.3,0.1,0.5,0.1);
-
-        EditText editText=findViewById(R.id.editText);
-        EditText editText2=findViewById(R.id.editText2);
-        EditText editText3=findViewById(R.id.editText3);
-        EditText editText4=findViewById(R.id.editText4);
-        EditText editText5=findViewById(R.id.editText5);
-        EditText resultBox=findViewById(R.id.editText6);
-
-        Double uh=Double.parseDouble(editText.getText().toString());
-        Double ua=Double.parseDouble(editText2.getText().toString());
-        Double us=Double.parseDouble(editText3.getText().toString());
-        Double un=Double.parseDouble(editText4.getText().toString());
-        Double dis=Double.parseDouble(editText5.getText().toString());
-
-        daProbabilityAlgorithm day=new daProbabilityAlgorithm();
-
-        day.setDisoderPerSample(dis);
-        day.setUserAngryPerDay(ua);
-        day.setUserHappyPerDay(uh);
-        day.setUserSadPerDay(us);
-        day.setUserNaturalPerDay(un);
-
-        double disoderPoint=day.getProbalityToHavingDisoderUsingEmotions();
-
-        resultBox.setText(""+disoderPoint);
-    }
 
     public void setEmotion(){
 
-        SeekBar hBar= findViewById(R.id.hbar);
-        SeekBar nBar= findViewById(R.id.nbar);
-        SeekBar sBar= findViewById(R.id.sbar);
-        SeekBar fBar= findViewById(R.id.fbar);
-        SeekBar aBar= findViewById(R.id.abar);
+         hBar= findViewById(R.id.hbar);
+         nBar= findViewById(R.id.nbar);
+         sBar= findViewById(R.id.sbar);
+         fBar= findViewById(R.id.fbar);
+         aBar= findViewById(R.id.abar);
 
         hBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -352,38 +355,76 @@ public class Calculate extends AppCompatActivity {
          day.setUserNaturalPerDay(UserNatural);
          day.setUserSadPerDay(UserSad);
 
-         if (meanFromKB.equals("False")) {
-             day.setMeanAngryInKB(0.3);
-             day.setMeanHappyInKB(0.05);
-             day.setMeanNaturalInKB(0.15);
-             day.setMeanSadInKB(0.5);
+         if (meanFromKB.equals("off")) {
 
-             if (status.equals("nDep")) {
-                 day.setDisoderPerSample(0.8);//get From rashini
-             } else if (status.equals("nAnx")) {
-                 day.setDisoderPerSample(0.4);
+             if(status.equals("nDep")) {
+
+                 day.setMeanAngryInKB(0.054);
+                 day.setMeanHappyInKB(0.05);
+                 day.setMeanNaturalInKB(0.1);
+                 day.setMeanSadInKB(0.5);
+                 day.setMeanFearInKB(0.05);
+
+                 day.setDisoderPerSample(0.35);
+
+             }else if (status.equals("nAnx")){
+
+                 day.setMeanAngryInKB(0.2);
+                 day.setMeanHappyInKB(0.05);
+                 day.setMeanNaturalInKB(0.1);
+                 day.setMeanSadInKB(0.4);
+                 day.setMeanFearInKB(0.05);
+
+                 day.setDisoderPerSample(0.35);
              }
 
          } else {
+
              day.setMeanAngryInKB(meanAngryInKB);
              day.setMeanHappyInKB(meanHappyInKB);
              day.setMeanNaturalInKB(meanNaturalInKB);
              day.setMeanSadInKB(meanSadInKB);
+             day.setMeanFearInKB(meanFearInKB);
 
-             if (status.equals("nDep")) {
-                 day.setDisoderPerSample(0.5);
-             } else if (status.equals("nAnx")) {
-                 day.setDisoderPerSample(0.4);
-             }
+             day.setDisoderPerSample(pointFromChatTest);
          }
 
-       double dqResult=day.getProbalityToHavingDisoderUsingEmotions();
-       String x=""+dqResult;
+    //process Probability and send values to fire base
 
-         Toast.makeText(Calculate.this, x,
-                 Toast.LENGTH_SHORT).show();
+         if(status.equals("nDep")) {
+             double dqResult = day.getProbalityToHavingDisoderUsingEmotions() * 2;
+             double result = (dqResult+pointFromChatTest)/2;
+
+             DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+             Date date=new Date();
+             String today= dateFormat.format(date);
+
+             DTR_Reference = FirebaseDatabase.getInstance().getReference("DTR");
+             DTR_Reference.child(userId).child(today).setValue(result);
+
+             /*Toast.makeText(Calculate.this, x,
+                     Toast.LENGTH_SHORT).show();*/
+         }else if(status.equals("nAnx")){
+
+             double aqResult = day.getProbalityToHavingDisoderUsingEmotions() * 2;
+             double result = (aqResult+pointFromChatTest)/2;
+
+             Toast.makeText(Calculate.this, ""+aqResult,
+                     Toast.LENGTH_SHORT).show();
+
+             DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+             Date date=new Date();
+             String today= dateFormat.format(date);
+
+             ATR_Reference = FirebaseDatabase.getInstance().getReference("ATR");
+             ATR_Reference.child(userId).child(today).setValue(result);
+         }
+
+        finish();
+
      }else{
          proccessDataIntoKnowledgeBase();
+
      }
 
 

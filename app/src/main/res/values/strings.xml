@@ -28,42 +28,52 @@
     <string name="set">Settings</string>
     <string name="sout">Sign Out</string>
 
-    <string-array name= "replyArray">
+    <string-array name="replyArray">
         <item> Not at all </item>
         <item> Several days </item>
         <item> More than half of the days </item>
         <item> Nearly everyday </item>
     </string-array>
 
-    <string-array name= "chooseArrayDep">
+    <string-array name="chooseArrayDep">
         <item> Do Anxiety Text </item>
         <item> Listen Relaxing Music </item>
         <item> Read Positive Thinking Quotes </item>
     </string-array>
 
-    <string-array name= "chooseArrayAnx">
+    <string-array name="chooseArrayAnx">
         <item> Do Depression Text </item>
         <item> Listen Relaxing Music </item>
         <item> Read Positive Thinking Quotes </item>
     </string-array>
 
-    <string-array name= "deseaseArray">
+    <string-array name="deseaseArray">
         <item> depression  </item>
         <item> anxiety </item>
     </string-array>
 
-    <string-array name= "firstdDeseaseArray">
+    <string-array name="firstdDeseaseArray">
         <item> Start with depression questions</item>
         <item> Start with anxiety questions</item>
     </string-array>
 
-    <string-array name= "firstRoundDeQue">
+    <string-array name="firstRoundDeQue">
         <item> Okay, with my plesure </item>
     </string-array>
 
-    <string-array name= "firstRoundAnQue">
+    <string-array name="firstRoundAnQue">
         <item> Let us do it </item>
     </string-array>
 
+    <string-array name="onOff">
+        <item> on </item>
+        <item> off </item>
+    </string-array>
+
+    <string-array name="sosOption">
+        <item> SOS message </item>
+        <item> SOS call </item>
+        <item> Deactivate </item>
+    </string-array>
 
 </resources>
