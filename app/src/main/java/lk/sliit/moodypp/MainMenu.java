@@ -145,7 +145,6 @@ public class MainMenu extends AppCompatActivity
         scrollview = findViewById(R.id.chatScrollView);
         scrollview.post(() -> scrollview.fullScroll(ScrollView.FOCUS_DOWN));
 
-
         chatLayout = findViewById(R.id.chatLayout);
 
         ImageView sendBtn = findViewById(R.id.sendBtn);
@@ -173,14 +172,12 @@ public class MainMenu extends AppCompatActivity
             return false;
         });
 
-
         initV2Chatbot();
         onStartingPoint();
     }
 
 
     protected void onStartingPoint() {
-
 
         Log.i("child","onstart Start");
 
@@ -202,14 +199,13 @@ public class MainMenu extends AppCompatActivity
                         QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("hi").setLanguageCode("en-US")).build();
                         new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
                     }
-
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
                 }
             });
+
         }else if(type.equals("anxiety")){
 
             Log.i("child","anxiety checked");
@@ -361,15 +357,7 @@ public class MainMenu extends AppCompatActivity
 
 
 
-
-
-
-
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////rashini
+    /////////////////////////////////////////////rashini
 
     private void initV2Chatbot() {
         try {
@@ -392,14 +380,13 @@ public class MainMenu extends AppCompatActivity
         if(replySpinner.getVisibility() == View.VISIBLE){
             msg=replySpinner.getSelectedItem().toString();
         }else {
-             msg = queryEditText.getText().toString();
-        }
+             msg = queryEditText.getText().toString(); }
 
 
         if (msg.trim().isEmpty()) {
             Toast.makeText(MainMenu.this, "Please enter your message!", Toast.LENGTH_LONG).show();
 
-        }else if(msg.equals("dog")) {
+        }else if(msg.equals("sathira")) {
           Intent i=new Intent(this,TestingBackDoor.class);
           startActivity(i);
         }else{
@@ -425,7 +412,6 @@ public class MainMenu extends AppCompatActivity
             if (botReply.equals("")) {
                 showTextView("Sorry i can't understand.", BOT); }
             else {
-
                 showTextView(botReply, BOT);
                 //this function set the `code for reply state
                 setCode(botReply);
@@ -718,6 +704,8 @@ public class MainMenu extends AppCompatActivity
         {
             replyState ="awsome_reason";
         }
+
+        //don't know
         else if (botMsg.equals("Hello welcome.. i'm MOODY.Please select a priority disorder to start your first session"))
         {
             replySpinner = findViewById(R.id.spinner);
@@ -745,7 +733,9 @@ public class MainMenu extends AppCompatActivity
             });
 
         }
-        else if (botMsg.equals("Hello welcome.. i'm MOODY.Seems like you have experience of both depression and anxiety. For further improvements of app please answer following questions before starting."))
+
+        //both
+        else if (botMsg.equals("Hello welcome.. i'm MOODY.Seems like you have experience of both depression and anxiety. For further improvements of app please answer following questions before starting.Select your priority disorder first"))
         {
             replySpinner = findViewById(R.id.spinner);
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.firstdDeseaseArray, android.R.layout.simple_spinner_item);
@@ -773,6 +763,7 @@ public class MainMenu extends AppCompatActivity
             });
         }
 
+////depression
         else if(botMsg.equals("Hello welcome.. i'm MOODY.Seems like you have experience of depression. For further improvements of app please answer following questions before starting."))
         {
             replySpinner = findViewById(R.id.spinner);
@@ -783,6 +774,7 @@ public class MainMenu extends AppCompatActivity
             replySpinner.setVisibility(View.VISIBLE);
         }
 
+/////anxiety
         else if(botMsg.equals("Hello welcome.. i'm MOODY.Seems like you have experience of anxiety. For further improvements of app please answer following questions before starting."))
         {
             replySpinner = findViewById(R.id.spinner);
@@ -792,6 +784,8 @@ public class MainMenu extends AppCompatActivity
             queryEditText.setVisibility(View.GONE);
             replySpinner.setVisibility(View.VISIBLE);
         }
+
+        //afrer first questions
         else if(botMsg.equals("Thank you for your contribution.....Okay let's start!!!"))
         {
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("hi").setLanguageCode("en-US")).build();
