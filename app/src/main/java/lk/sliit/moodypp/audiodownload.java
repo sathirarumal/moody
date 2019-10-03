@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
@@ -31,10 +34,13 @@ public class audiodownload extends AppCompatActivity {
         StorageReference storageReference;
         StorageReference ref;
         StorageReference ref2;
+        StorageReference ref3;
 
 
 
-   //String[] songList = new String[]{"Meditation_Music","Stress_Relaxation","Therapy_Music",};
+
+
+    //String[] songList = new String[]{"Meditation_Music","Stress_Relaxation","Therapy_Music",};
     private ArrayList<String> songList=new ArrayList<String>();
     Intent Output;
     ListView mylistviewSong;
@@ -43,6 +49,13 @@ public class audiodownload extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audiodownload);
+
+        /*recyclerView = findViewById(R.id.rv_heroes);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        MusicListAdapter heroListAdapter = new MusicListAdapter(musics, this);
+        recyclerView.setAdapter(heroListAdapter);*/
 
         downloadMusic = findViewById(R.id.downloadmusic);
 
@@ -74,12 +87,14 @@ public class audiodownload extends AppCompatActivity {
                         startActivity(Output);
                 }
 
-                /*if(songList.get(position).equals("Stress_Relaxation")) {
-                    Output = new Intent(audiodownload.this, SecondActivity.class);
+                if(songList.get(position).equals("Stress_Relaxation")) {
+                    //Output = new Intent(audiodownload.this, SecondActivity.class);
                     startActivity(Output);
-                }*/
+                }
             }
         });
+
+        //PopulateMusic();
 
     }
 
@@ -90,6 +105,7 @@ public class audiodownload extends AppCompatActivity {
         storageReference=firebaseStorage.getInstance().getReference();
         ref=storageReference.child("Anxiety - Background Music.mp3");
         ref2=storageReference.child("Most Emotional Music A Final Sacrifice by Luke Richards.mp3");
+        ref3=storageReference.child("Most Emotional Music A Final Sacrifice by Luke Richards.mp3");
 
         //mysong1
         ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -118,6 +134,19 @@ public class audiodownload extends AppCompatActivity {
 
             }
         });
+        //mysong3
+        ref3.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                String url=uri.toString();
+                downloadfiles(audiodownload.this,"SUSPENSEFUL ANXIETY MUSIC",".mp3",DIRECTORY_DOWNLOADS,url);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
    /* public  void godownloadsong(View view){
@@ -139,6 +168,7 @@ public class audiodownload extends AppCompatActivity {
 
 
     }
+
 
 }
 

@@ -13,5 +13,13 @@
     <color name="colorgraph"> #03A9F4 </color>
     <color name="whiteButton">#FFFFFF</color>
     <color name="errorColor">#DD0928</color>
+    <color name="viewbtn">#8657c5</color>
+    <color name="seekbar">#FFFFFF</color>
+    <color name="view2">#0009FF</color>
+    <color name="nowplaying">#fff</color>
+    <color name="audiodwn">#2287A2</color>
+    <color name="music1">#9874a7</color>
+
+
 
 </resources>

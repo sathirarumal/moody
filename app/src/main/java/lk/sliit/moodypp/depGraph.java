@@ -3,11 +3,21 @@ package lk.sliit.moodypp;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
+import com.google.cloud.dialogflow.v2beta1.QueryInput;
+import com.google.cloud.dialogflow.v2beta1.TextInput;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.collection.LLRBNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.grpc.netty.shaded.io.netty.channel.MaxBytesRecvByteBufAllocator;
@@ -34,23 +44,89 @@ public class depGraph<i> extends AppCompatActivity {
    public TextView tv;
    public TextView Result;
    int[] pointvalue={10,50,94};
-    String[] axisData = {"09/01", "09/03", "09/05", "09/08", "09/11", "09/13", "09/18", "09/20", "09/21",
-            "09/20", "09/23", "09/29","10/02","10/05","10/06","10/09"};
+   //public String[] axisData;
    // double[] yAxisData = {0.2,0.65,0.34,0.91, 0.20, 0.60, 0.15, 0.40, 0.45, 0.10, 0.90, 0.18};
-    int[] yAxisData = {50, 20, 15, 30, 20, 60, 15, 40, 45, 10, 90, 18,10,20,30,45};
-    public int Max;
+   //int[] yAxisData ;
+   public int Max;
 
+    private String userId;
 
+    public DatabaseReference Fde_Database;
+    public DatabaseReference F_deChild;
+    public FirebaseAuth mAuth;
+
+    public int val=1;
+    double dpVar;
+    int dpval;
+    String dateVar;
+
+    ArrayList<Integer> a1; //y
+    ArrayList<String> a2; //x
+
+    int[] yAxisData={};
+    String[] axisData={};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph_view2);
 
+        //get userid from firebase
+        mAuth = FirebaseAuth.getInstance();
+        userId=mAuth.getCurrentUser().getUid();
+
+        //firebase connection
+        Fde_Database = FirebaseDatabase.getInstance().getReference("DTR");
+        F_deChild=Fde_Database.child(userId);
+
+        //a1=new ArrayList<>();
+        //a2=new ArrayList<>();
+
+         //yAxisData=new int[a1.size()];
+         //axisData=new String[a2.size()];
+
+        F_deChild.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot ds:dataSnapshot.getChildren()){
+
+                    String dateVar=ds.getKey();
+                    Double dpVar=ds.getValue(Double.class);
+                    int dpvalue=(int)(dpVar*100);
+
+                    yAxisData[0]=dpvalue;
+                    axisData[0]=dateVar;
+
+
+                    Log.i("sra",dateVar+" "+dpvalue);
+                    val= val+1;
+                }
+                //Log.i("sra",dp[0]+" "+date[0]);
+
+
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //yAxisData=a1.toArray(yAxisData);
+        //axisData=a2.toArray(axisData);
+        //Log.i("sra",axisData[0]+" "+dpVar);
+
+//
+        //String[] axisData = {"09/01", "09/03", "09/05", "09/08", "09/11", "09/13", "09/18", "09/20", "09/21","09/20", "09/23", "09/29","10/02","10/05","10/06","10/09"};
+        //int[] yAxisData = {50, 20, 15, 30, 20, 60, 15, 40, 45, 10, 90, 18,10,20,30,45};
+
         lineChartView = findViewById(R.id.chart2);
         TextView tv = (TextView) findViewById(R.id.textView4);
         TextView Result = (TextView) findViewById(R.id.display2);
         tv.setText(status);
+
         // Max=pointvalue[100];
         if (pointvalue[0] > 0 && pointvalue[0] < 30) {
             Result.setText(status1);
@@ -64,7 +140,7 @@ public class depGraph<i> extends AppCompatActivity {
         List yAxisValues=new ArrayList();
         List axisValues=new ArrayList();
 
-        Line line = new Line(yAxisValues).setColor(Color.parseColor("#4527a0"));
+        Line line = new Line(yAxisValues).setColor(Color.parseColor("#FFFFFF"));
 
 
 
@@ -88,12 +164,12 @@ public class depGraph<i> extends AppCompatActivity {
         axis.setName("Time Period");
         axis.setValues(axisValues);
         axis.setTextSize(16);
-        axis.setTextColor(Color.parseColor("#616161"));
+        axis.setTextColor(Color.parseColor("#808080"));
         data.setAxisXBottom(axis);
 
         Axis yAxis = new Axis();
         yAxis.setName("Depression Level");
-        yAxis.setTextColor(Color.parseColor("#616161"));
+        yAxis.setTextColor(Color.parseColor("#808080"));
         yAxis.setTextSize(16);
         data.setAxisYLeft(yAxis);
 

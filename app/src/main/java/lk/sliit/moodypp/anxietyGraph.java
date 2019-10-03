@@ -5,6 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.cloud.dialogflow.v2beta1.QueryInput;
+import com.google.cloud.dialogflow.v2beta1.TextInput;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +34,36 @@ public class anxietyGraph extends AppCompatActivity {
     int[] Yaxis={10,20,50,40,90,10,30};
     static  String status_anx="Hello Madushi see your Anxiety Progress result here";
 
+    private String userId;
+    public FirebaseAuth mAuth;
+
+    public DatabaseReference Fan_Database;
+    public DatabaseReference F_anChild;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anxiety_graph);
+
+        //firebase connection
+        mAuth = FirebaseAuth.getInstance();
+        userId=mAuth.getCurrentUser().getUid();
+
+        Fan_Database = FirebaseDatabase.getInstance().getReference("ATR");
+        F_anChild=Fan_Database.child(userId);
+
+
+        F_anChild.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                fdqSession fdqObj = dataSnapshot.getValue(fdqSession.class);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         chartanxiety=findViewById(R.id.anxietygraph1);
         TextView textView=(TextView)findViewById(R.id.viewgraph1);

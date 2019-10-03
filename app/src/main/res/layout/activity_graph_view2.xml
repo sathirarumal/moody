@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".depGraph"
-    android:background="#B0C4DE">
+    tools:context=".depGraph">
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -15,7 +14,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="172dp"
-        android:background="@drawable/ic_outborder"
+        android:background="#448AFF"
         android:orientation="vertical"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,7 +25,8 @@
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/chart2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/view2"/>
     </LinearLayout>
 
     <TextView
@@ -36,10 +36,10 @@
         android:layout_marginStart="1dp"
         android:layout_marginTop="29dp"
         android:layout_marginEnd="1dp"
-        android:background="#FFEE4D"
+        android:background="#2A9CF9"
         android:text="TextView"
         android:textAlignment="center"
-        android:textColor="#4B0082"
+        android:textColor="#000"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -54,16 +54,17 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="1dp"
         android:layout_marginBottom="8dp"
-        android:background="#483D8B"
+        android:background="#395EC6"
         android:text="TextView"
         android:textAlignment="center"
-        android:textColor="#E7F529"
+        android:textColor="#000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.663" />
 
 
 </android.support.constraint.ConstraintLayout>
