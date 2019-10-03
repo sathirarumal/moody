@@ -83,6 +83,8 @@ public double ansPoint(String msg, String state)
         return 0;
     }
 
+
+
     public double ans_points_high(String msg)
     {
         if (msg.equals("Not at all"))
@@ -99,6 +101,9 @@ public double ansPoint(String msg, String state)
         }
         return 0;
     }
+
+
+
 
     public String first_time_ansPoint(String msg) {
         if (msg.equals("Not at all")) {
