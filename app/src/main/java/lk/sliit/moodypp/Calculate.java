@@ -344,6 +344,10 @@ public class Calculate extends AppCompatActivity {
         UserNatural=nVal/total;
         UserSad=sVal/total;
 
+        if(pointFromChatTest==0){
+            pointFromChatTest=0.01;
+        }
+
 
      if(status.equals("nDep") || status.equals("nAnx") ) {
 
@@ -365,7 +369,7 @@ public class Calculate extends AppCompatActivity {
                  day.setMeanSadInKB(0.5);
                  day.setMeanFearInKB(0.05);
 
-                 day.setDisoderPerSample(0.35);
+                 day.setDisoderPerSample(pointFromChatTest);
 
              }else if (status.equals("nAnx")){
 
@@ -375,7 +379,7 @@ public class Calculate extends AppCompatActivity {
                  day.setMeanSadInKB(0.4);
                  day.setMeanFearInKB(0.05);
 
-                 day.setDisoderPerSample(0.35);
+                 day.setDisoderPerSample(pointFromChatTest);
              }
 
          } else {
@@ -392,22 +396,21 @@ public class Calculate extends AppCompatActivity {
     //process Probability and send values to fire base
 
          if(status.equals("nDep")) {
-             double dqResult = day.getProbalityToHavingDisoderUsingEmotions() * 2;
-             double result = (dqResult+pointFromChatTest)/2;
+
+             double dqResult = day.getProbalityToHavingDisoderUsingEmotions();
 
              DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
              Date date=new Date();
              String today= dateFormat.format(date);
 
              DTR_Reference = FirebaseDatabase.getInstance().getReference("DTR");
-             DTR_Reference.child(userId).child(today).setValue(result);
+             DTR_Reference.child(userId).child(today).setValue(dqResult);
 
              /*Toast.makeText(Calculate.this, x,
                      Toast.LENGTH_SHORT).show();*/
          }else if(status.equals("nAnx")){
 
-             double aqResult = day.getProbalityToHavingDisoderUsingEmotions() * 2;
-             double result = (aqResult+pointFromChatTest)/2;
+             double aqResult = day.getProbalityToHavingDisoderUsingEmotions();
 
              Toast.makeText(Calculate.this, ""+aqResult,
                      Toast.LENGTH_SHORT).show();
@@ -417,7 +420,7 @@ public class Calculate extends AppCompatActivity {
              String today= dateFormat.format(date);
 
              ATR_Reference = FirebaseDatabase.getInstance().getReference("ATR");
-             ATR_Reference.child(userId).child(today).setValue(result);
+             ATR_Reference.child(userId).child(today).setValue(aqResult);
          }
 
         finish();
