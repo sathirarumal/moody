@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".anxietyGraph"
-    android:background="#FFFACD">
+    android:background="#FFF">
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -19,7 +19,8 @@
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/anxietygraph1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="#777f9e"/>
 
     </LinearLayout>
 
@@ -31,9 +32,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="#F6501E"
+        android:background="#6f5eb3"
         android:textColor="#DAA520"
-        android:text="Click here for Advanced checking"
+        android:text="Check Result"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.222"

@@ -29,18 +29,12 @@ import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 
-public class depGraph<i> extends AppCompatActivity {
+public class depGraph extends AppCompatActivity {
 
     LineChartView lineChartView;
 
-   //static String t="";
-   static  String status="Hello Madushi see your Depression Progress result here";
-   static  String status1="You don't have depression";
-    static  String status2="You have depression please follow up to check more";
-    static  String status3="your depression level is high.please met Doctor";
-
-
-
+   public DatabaseReference user;
+   public DatabaseReference userdata;
    public TextView tv;
    public TextView Result;
    int[] pointvalue={10,50,94};
@@ -49,7 +43,7 @@ public class depGraph<i> extends AppCompatActivity {
    //int[] yAxisData ;
    public int Max;
 
-    private String userId;
+    public String userId;
 
     public DatabaseReference Fde_Database;
     public DatabaseReference F_deChild;
@@ -59,10 +53,12 @@ public class depGraph<i> extends AppCompatActivity {
     double dpVar;
     int dpval;
     String dateVar;
+    public String userName;
 
-    ArrayList<Integer> a1; //y
-    ArrayList<String> a2; //x
+   // ArrayList<Integer> a1; //y
+   // ArrayList<String> a2; //x
 
+    //array
     int[] yAxisData={};
     String[] axisData={};
 
@@ -75,10 +71,33 @@ public class depGraph<i> extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userId=mAuth.getCurrentUser().getUid();
 
+        user=FirebaseDatabase.getInstance().getReference("Users");
+        userdata=user.child(userId);
+
+        userdata.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user userObj=dataSnapshot.getValue(user.class);
+
+                userName=userObj.getCallName();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        String status="Hello "+ userName+"see your Depression Progress result here";
+        String status1="You don't have depression";
+        String status2="You have depression please follow up to check more";
+        String status3="your depression level is high.please met Doctor";
+
         //firebase connection
         Fde_Database = FirebaseDatabase.getInstance().getReference("DTR");
         F_deChild=Fde_Database.child(userId);
 
+        //check with arraylist
         //a1=new ArrayList<>();
         //a2=new ArrayList<>();
 
@@ -95,9 +114,8 @@ public class depGraph<i> extends AppCompatActivity {
                     Double dpVar=ds.getValue(Double.class);
                     int dpvalue=(int)(dpVar*100);
 
-                    yAxisData[0]=dpvalue;
-                    axisData[0]=dateVar;
-
+                    //yAxisData[val]=dpvalue;
+                    //axisData[val]=dateVar;
 
                     Log.i("sra",dateVar+" "+dpvalue);
                     val= val+1;
@@ -119,8 +137,8 @@ public class depGraph<i> extends AppCompatActivity {
         //Log.i("sra",axisData[0]+" "+dpVar);
 
 //
-        //String[] axisData = {"09/01", "09/03", "09/05", "09/08", "09/11", "09/13", "09/18", "09/20", "09/21","09/20", "09/23", "09/29","10/02","10/05","10/06","10/09"};
-        //int[] yAxisData = {50, 20, 15, 30, 20, 60, 15, 40, 45, 10, 90, 18,10,20,30,45};
+        String[] axisData = {"09/01", "09/03", "09/05", "09/08", "09/11", "09/13", "09/18", "09/20", "09/21","09/20", "09/23", "09/29","10/02","10/05","10/06","10/09"};
+        int[] yAxisData = {50, 20, 15, 30, 20, 60, 15, 40, 45, 10, 90, 18,10,20,30,45};
 
         lineChartView = findViewById(R.id.chart2);
         TextView tv = (TextView) findViewById(R.id.textView4);

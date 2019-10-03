@@ -87,10 +87,10 @@ public class audiodownload extends AppCompatActivity {
                         startActivity(Output);
                 }
 
-                if(songList.get(position).equals("Stress_Relaxation")) {
+                /*if(songList.get(position).equals("Stress_Relaxation")) {
                     //Output = new Intent(audiodownload.this, SecondActivity.class);
                     startActivity(Output);
-                }
+                }*/
             }
         });
 
@@ -105,7 +105,7 @@ public class audiodownload extends AppCompatActivity {
         storageReference=firebaseStorage.getInstance().getReference();
         ref=storageReference.child("Anxiety - Background Music.mp3");
         ref2=storageReference.child("Most Emotional Music A Final Sacrifice by Luke Richards.mp3");
-        ref3=storageReference.child("Most Emotional Music A Final Sacrifice by Luke Richards.mp3");
+        ref3=storageReference.child("SUSPENSEFUL ANXIETY MUSIC.mp3");
 
         //mysong1
         ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -125,12 +125,13 @@ public class audiodownload extends AppCompatActivity {
         ref2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
+
                 String url=uri.toString();
                 downloadfiles(audiodownload.this,"Most Emotional Music A Final Sacrifice by Luke Richards",".mp3",DIRECTORY_DOWNLOADS,url);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onFailure(@NonNull Exception e){
 
             }
         });
