@@ -89,7 +89,7 @@ public class MusicListview extends AppCompatActivity {
             }
         });
     }*/
-
+/////////////////////////get
     public ArrayList<File> findSong(File root){
         ArrayList<File> arrayList = new ArrayList<File>();
         File[] files = root.listFiles();
