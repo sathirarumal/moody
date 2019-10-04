@@ -118,6 +118,7 @@ public class musicplayer extends AppCompatActivity {
                 myseekbar.setMax(myMediaplayer.getDuration());
                 if (myMediaplayer.isPlaying()) {
                     btn_pause.setBackgroundResource(R.drawable.ic_play_arrow);
+                    myMediaplayer.stop();
                 } else {
                     btn_pause.setBackgroundResource(R.drawable.ic_pause);
                    myMediaplayer.start();
