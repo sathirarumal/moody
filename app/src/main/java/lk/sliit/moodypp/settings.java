@@ -147,7 +147,7 @@ public class settings extends AppCompatActivity {
 
                          editor.putString("sos", sosMethod);
                          editor.apply();
-                         SOS sosObj = new SOS(mpn, tpn, tName, sosMethod);
+                         SOS sosObj = new SOS(mpn, tName, tpn, sosMethod);
 
                          databaseReference2 = firebaseDatabase.getReference("SOS");
                          childRef2 = databaseReference2.child(userId);

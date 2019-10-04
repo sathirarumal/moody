@@ -1,5 +1,6 @@
 package lk.sliit.moodypp;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +48,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -74,7 +81,7 @@ public class MainMenu extends AppCompatActivity
     public DatabaseReference F_deChild;
     public DatabaseReference F_anChild;
     public DatabaseReference userDetailRef;
-    public DatabaseReference userIdRef;
+    public DatabaseReference sosRef;
 
     dqSession dqSessionObj;
     fdqSession fdqSessionObj;
@@ -98,6 +105,8 @@ public class MainMenu extends AppCompatActivity
     public botTrainer bt;
     public String type;
     public String defaultDisorder;
+    public String sos;
+    public String usersName;
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,6 +289,23 @@ public class MainMenu extends AppCompatActivity
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder().setText("unknown123").setLanguageCode("en-US")).build();
             new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
         }
+
+    ////////////////////////////////////////////////////sathira get name/////////////////////////////////////////////////////////////////////////////////
+
+       userDetailRef=FirebaseDatabase.getInstance().getReference("Users").child(userId);
+       userDetailRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user userObj = dataSnapshot.getValue(user.class);
+                usersName=userObj.getCallName();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
     ///////////////////////////////////////////////////////////////// end //////////////////////////////////////////////////////////////////////////////
 
@@ -352,12 +378,29 @@ public class MainMenu extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void requestHelpViaSMS(){
+
+        sosRef=FirebaseDatabase.getInstance().getReference("SOS").child(userId);
+        sosRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                SOS sosObj = dataSnapshot.getValue(SOS.class);
+                sosObj.sendSMS(usersName);
+
+                Toast.makeText(MainMenu.this, "help is on the way", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
 
 
-
-    /////////////////////////////////////////////rashini
+    /////////////////////////////////////////////rashini/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initV2Chatbot() {
         try {
@@ -865,8 +908,6 @@ public class MainMenu extends AppCompatActivity
 
                 double dqPoint = dqSessionObj.GetDqPointPercentage();
 
-                Toast.makeText(MainMenu.this, ""+dqPoint, Toast.LENGTH_LONG).show();
-
                 SharedPreferences sharePref= PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharePref.edit();
                 editor.putString("status","nDep");
@@ -875,6 +916,29 @@ public class MainMenu extends AppCompatActivity
 
                 Intent intent=new Intent(this,Calculate.class);
                 startActivity(intent);
+
+                //////////////////////////////////////////////////////////////////SRA////////////////////////////////////
+                if(10 <= bt.ansPoint(msg, "high")){
+
+                    Dexter.withActivity(this)
+                            .withPermission(Manifest.permission.SEND_SMS)
+                            .withListener(new PermissionListener() {
+                                @Override
+                                public void onPermissionGranted(PermissionGrantedResponse response) {
+                                    requestHelpViaSMS();
+                                }
+
+                                @Override
+                                public void onPermissionDenied(PermissionDeniedResponse response) {
+
+                                }
+
+                                @Override
+                                public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                                    token.continuePermissionRequest();
+                                }
+                            }).check();
+                }
 
                 return "dq5";
             }
