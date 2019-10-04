@@ -1,5 +1,7 @@
 package lk.sliit.moodypp;
 
+import android.telephony.SmsManager;
+
 public class SOS {
 
     String myNo;
@@ -32,5 +34,11 @@ public class SOS {
 
     public String getMethod() {
         return method;
+    }
+
+    public void sendSMS(String name){
+        String Message = "This is an auto generated message from MOODY(depression and anxiety detector) "+name+"need some help from "+this.trustedname+" ";
+        SmsManager smgr = SmsManager.getDefault();
+        smgr.sendTextMessage(trustednumber,null,Message,null,null);
     }
 }
