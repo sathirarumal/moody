@@ -33,11 +33,12 @@ public class depGraph extends AppCompatActivity {
 
     LineChartView lineChartView;
 
-   public DatabaseReference user;
+   public DatabaseReference users;
    public DatabaseReference userdata;
    public TextView tv;
    public TextView Result;
    int[] pointvalue={10,50,94};
+   public FirebaseDatabase fd;
    //public String[] axisData;
    // double[] yAxisData = {0.2,0.65,0.34,0.91, 0.20, 0.60, 0.15, 0.40, 0.45, 0.10, 0.90, 0.18};
    //int[] yAxisData ;
@@ -71,16 +72,18 @@ public class depGraph extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userId=mAuth.getCurrentUser().getUid();
 
-        user=FirebaseDatabase.getInstance().getReference("Users");
-        userdata=user.child(userId);
+        fd=FirebaseDatabase.getInstance();
+        users=fd.getReference("Users");
+        userdata=users.child(userId);
 
         userdata.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user userObj=dataSnapshot.getValue(user.class);
-
                 userName=userObj.getCallName();
+                assert userName != null;
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -88,7 +91,12 @@ public class depGraph extends AppCompatActivity {
         });
 
 
-        String status="Hello "+ userName+"see your Depression Progress result here";
+        //get name from google account
+        if(userName == null) {
+            userName = mAuth.getCurrentUser().getDisplayName();
+        }
+
+        String status="Hello "+ userName +"see your Depression Progress result here";
         String status1="You don't have depression";
         String status2="You have depression please follow up to check more";
         String status3="your depression level is high.please met Doctor";
@@ -117,7 +125,7 @@ public class depGraph extends AppCompatActivity {
                     //yAxisData[val]=dpvalue;
                     //axisData[val]=dateVar;
 
-                    Log.i("sra",dateVar+" "+dpvalue);
+                    Log.i("madu",dateVar+" "+dpvalue);
                     val= val+1;
                 }
                 //Log.i("sra",dp[0]+" "+date[0]);
@@ -182,12 +190,12 @@ public class depGraph extends AppCompatActivity {
         axis.setName("Time Period");
         axis.setValues(axisValues);
         axis.setTextSize(16);
-        axis.setTextColor(Color.parseColor("#808080"));
+        axis.setTextColor(Color.parseColor("#373A3A"));
         data.setAxisXBottom(axis);
 
         Axis yAxis = new Axis();
         yAxis.setName("Depression Level");
-        yAxis.setTextColor(Color.parseColor("#808080"));
+        yAxis.setTextColor(Color.parseColor("#373A3A"));
         yAxis.setTextSize(16);
         data.setAxisYLeft(yAxis);
 

@@ -6,7 +6,7 @@
     <color name="themeColor">#9DE8A1</color>
     <color name="insertTab">#e1ecf0</color>
     <color name="navBar">#7853B9</color>
-    <color name="navBarText">#01A394</color>
+    <color name="navBarText">#06E0CC</color>
     <color name="navBaritem">#373A3A</color>
     <color name ="colorBot"> #B7F0F1 </color>
     <color name="colorUser"> #99D5A8 </color>
@@ -14,7 +14,7 @@
     <color name="whiteButton">#FFFFFF</color>
     <color name="errorColor">#DD0928</color>
     <color name="viewbtn">#8657c5</color>
-    <color name="seekbar">#FFFFFF</color>
+    <color name="seekbar">#FFFFF0</color>
     <color name="view2">#9874a7</color>
     <color name="nowplaying">#fff</color>
     <color name="audiodwn">#2287A2</color>
