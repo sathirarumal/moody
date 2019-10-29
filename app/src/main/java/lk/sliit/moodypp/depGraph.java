@@ -34,36 +34,34 @@ public class depGraph extends AppCompatActivity {
    public DatabaseReference userdata;
    public TextView tv;
    public TextView Result;
-   int[] pointvalue={10,50,94};
+   int[] pointvalue={10,50,60};
    public FirebaseDatabase fd;
-   //public String[] axisData;
-   // double[] yAxisData = {0.2,0.65,0.34,0.91, 0.20, 0.60, 0.15, 0.40, 0.45, 0.10, 0.90, 0.18};
-   //int[] yAxisData ;
-   public int Max;
-
-    public String userId;
+   public String userId;
 
     public DatabaseReference Fde_Database;
     public DatabaseReference F_deChild;
     public FirebaseAuth mAuth;
 
     public int val=1;
-    double dpVar;
-    int dpval;
-    String dateVar;
     public String userName;
 
-   // ArrayList<Integer> a1; //y
-   // ArrayList<String> a2; //x
+    public ArrayList<Integer> a1; //y
+    public ArrayList<String> a2; //x
 
     //array
-    int[] yAxisData={};
-    String[] axisData={};
+    public int[] yAxisData;
+    public String[] axisData;
+
+    public String status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph_view2);
+
+        lineChartView = findViewById(R.id.chart2);
+        TextView tv = (TextView) findViewById(R.id.textView4);
+        TextView Result = (TextView) findViewById(R.id.display2);
 
         //get userid from firebase
         mAuth = FirebaseAuth.getInstance();
@@ -78,7 +76,10 @@ public class depGraph extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user userObj=dataSnapshot.getValue(user.class);
                 userName=userObj.getCallName();
-                assert userName != null;
+                Log.i("sra",userName);
+                status="Hello "+ userName +" see your Depression Progress result here";
+                tv.setText(status);
+
             }
 
             @Override
@@ -93,7 +94,6 @@ public class depGraph extends AppCompatActivity {
             userName = mAuth.getCurrentUser().getDisplayName();
         }
 
-        String status="Hello "+ userName +"see your Depression Progress result here";
         String status1="You don't have depression";
         String status2="You have depression please follow up to check more";
         String status3="your depression level is high.please met Doctor";
@@ -103,11 +103,8 @@ public class depGraph extends AppCompatActivity {
         F_deChild=Fde_Database.child(userId);
 
         //check with arraylist
-        //a1=new ArrayList<>();
-        //a2=new ArrayList<>();
-
-         //yAxisData=new int[a1.size()];
-         //axisData=new String[a2.size()];
+        a1=new ArrayList<>();
+        a2=new ArrayList<>();
 
         F_deChild.addValueEventListener(new ValueEventListener() {
             @Override
@@ -119,13 +116,14 @@ public class depGraph extends AppCompatActivity {
                     Double dpVar=ds.getValue(Double.class);
                     int dpvalue=(int)(dpVar*100);
 
-                    //yAxisData[val]=dpvalue;
-                    //axisData[val]=dateVar;
+                    a1.add(dpvalue);
+                    a2.add(dateVar);
 
                     Log.i("madu",dateVar+" "+dpvalue);
                     val= val+1;
+
+                    loadGraph();
                 }
-                //Log.i("sra",dp[0]+" "+date[0]);
 
 
             }
@@ -137,18 +135,6 @@ public class depGraph extends AppCompatActivity {
             }
         });
 
-        //yAxisData=a1.toArray(yAxisData);
-        //axisData=a2.toArray(axisData);
-        //Log.i("sra",axisData[0]+" "+dpVar);
-
-//
-        String[] axisData = {"09/01", "09/03", "09/05", "09/08", "09/11", "09/13", "09/18", "09/20", "09/21","09/20", "09/23", "09/29","10/02","10/05","10/06","10/09"};
-        int[] yAxisData = {50, 20, 15, 30, 20, 60, 15, 40, 45, 10, 90, 18,10,20,30,45};
-
-        lineChartView = findViewById(R.id.chart2);
-        TextView tv = (TextView) findViewById(R.id.textView4);
-        TextView Result = (TextView) findViewById(R.id.display2);
-        tv.setText(status);
 
         // Max=pointvalue[100];
         if (pointvalue[0] > 0 && pointvalue[0] < 30) {
@@ -159,6 +145,25 @@ public class depGraph extends AppCompatActivity {
             Result.setText(status);
         } else
             Result.setText("Hello");
+
+    }
+
+    public void loadGraph(){
+        Log.i("sra",""+a2.size());
+
+        yAxisData=new int[a1.size()];
+        axisData=new String[a2.size()];
+
+        int s;
+        for(s=0;s<a1.size();s++){
+            yAxisData[s]=a1.get(s);
+            axisData[s]=a2.get(s);
+        }
+
+        Log.i("sra",""+axisData[0]);
+
+        //String[] axisData = {"09/01", "09/03", "09/05", "09/08", "09/11", "09/13", "09/18", "09/20", "09/21","09/20", "09/23", "09/29","10/02","10/05","10/06","10/09"};
+        //int[] yAxisData = {50, 20, 15, 30, 20, 60, 15, 40, 45, 10, 90, 18,10,20,30,45};
 
         List yAxisValues=new ArrayList();
         List axisValues=new ArrayList();
@@ -173,7 +178,7 @@ public class depGraph extends AppCompatActivity {
 
         for ( int i = 0; i < yAxisData.length; i++) {
             yAxisValues.add(new PointValue(i,yAxisData[i]));
-           // yAxisValues.add(new PointValue(i,new AxisValue(i).setLabel(yAxisData[i]));
+            // yAxisValues.add(new PointValue(i,new AxisValue(i).setLabel(yAxisData[i]));
         }
 
         List lines = new ArrayList();
@@ -201,6 +206,5 @@ public class depGraph extends AppCompatActivity {
         viewport.top = 100;
         lineChartView.setMaximumViewport(viewport);
         lineChartView.setCurrentViewport(viewport);
-
     }
 }

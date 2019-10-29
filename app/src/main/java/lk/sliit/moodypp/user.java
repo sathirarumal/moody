@@ -2,8 +2,6 @@ package lk.sliit.moodypp;
 
 public class user {
 
-
-
     public String email;
     public String callName;
     public String age;

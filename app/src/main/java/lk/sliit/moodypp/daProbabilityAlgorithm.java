@@ -34,11 +34,6 @@ public class daProbabilityAlgorithm {
         probaToHaveDisorderWhenSad =(disoderPerSample*userSadPerDay)/meanSadInKB;
         probaToHaveDisorderWhenFear =(disoderPerSample*userFearPerDay)/meanFearInKB;
 
-        /*probaToHaveDisorderWhenHappy =(meanHappyInKB*userHappyPerDay)/disoderPerSample; //p(D/H) =(P(D)*P(H))/p(H/D)
-        probaToHaveDisorderWhenAngry =(meanAngryInKB*userAngryPerDay)/disoderPerSample;
-        probaToHaveDisorderWhenNatural =(meanNaturalInKB*userNaturalPerDay)/disoderPerSample;
-        probaToHaveDisorderWhenSad =(meanSadInKB*userSadPerDay)/disoderPerSample;
-        probaToHaveDisorderWhenFear =(meanFearInKB*userFearPerDay)/disoderPerSample;*/
 
     }
 
