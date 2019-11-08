@@ -1,15 +1,25 @@
 package lk.sliit.moodypp;
 
 import android.Manifest;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.karumi.dexter.Dexter;
@@ -25,7 +35,17 @@ import java.util.ArrayList;
 public class MusicListview extends AppCompatActivity {
    public ListView mylistviewSong;
    public String[] items;
+   public String type;
   // private StorageReference mStorageRef;
+    FirebaseStorage firebaseStorage;
+    StorageReference storageReference;
+    StorageReference ref;
+    StorageReference ref2;
+    StorageReference ref3;
+    StorageReference ref4;
+    StorageReference ref5;
+    StorageReference ref6;
+    StorageReference ref7;
 
 
 
@@ -37,7 +57,8 @@ public class MusicListview extends AppCompatActivity {
         mylistviewSong = (ListView)findViewById(R.id.myList);
         runtimepermission();
 
-      //  mStorageRef = FirebaseStorage.getInstance().getReference();
+        SharedPreferences sharePref2= PreferenceManager.getDefaultSharedPreferences(this);
+        type= sharePref2.getString("userType",null);
 
     }
 
@@ -64,35 +85,12 @@ public class MusicListview extends AppCompatActivity {
     }
 
 
-    public  void gonewlist(View view){
-        Intent intent=new Intent(this,audiodownload.class);
-        startActivity(intent);
-    }
-
-
-
-    /*public void getAudio(){
-
-        File localFile = File.createTempFile("images", "jpg");
-        riversRef.getFile(localFile)
-                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Successfully downloaded data to local file
-                        // ...
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle failed download
-                // ...
-            }
-        });
-    }*/
 /////////////////////////get
     public ArrayList<File> findSong(File root){
+
         ArrayList<File> arrayList = new ArrayList<File>();
-        File[] files = root.listFiles();
+        File directory = getExternalFilesDir("MoodyMusics");
+        File[] files = directory.listFiles();
 
         for (File singleFile : files){
             if(singleFile.isDirectory() && !singleFile.isHidden()){
@@ -108,6 +106,7 @@ public class MusicListview extends AppCompatActivity {
         }
         return arrayList;
     }
+
 
     void display(){
         final ArrayList<File> mysongs = findSong(Environment.getExternalStorageDirectory());
@@ -141,4 +140,109 @@ public class MusicListview extends AppCompatActivity {
     }
 
 
+
+    //download
+    public void download(View view){
+
+        //File sdCardRoot = new File(Environment.getExternalStorageDirectory(), "/moodyMusics");
+
+        storageReference=firebaseStorage.getInstance().getReference();
+        ref=storageReference.child("Anxiety - Background Music.mp3");
+        ref2=storageReference.child("Most Emotional Music A Final Sacrifice by Luke Richards.mp3");
+        ref3=storageReference.child("SUSPENSEFUL ANXIETY MUSIC.mp3");
+
+
+        if(type.equals("depression")){
+
+            //mysong1
+            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"Anxiety - Background Music",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+
+
+
+
+
+
+        }else if(type.equals("anxiety")){
+
+            //mysong2
+            ref2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"Most Emotional Music A Final Sacrifice by Luke Richards",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e){
+
+                }
+            });
+
+
+
+
+        }else if(type.equals("both") || type.equals("don't know") ){
+
+            //mysong3
+            ref3.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"SUSPENSEFUL ANXIETY MUSIC",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+
+
+
+        }
+
+    }
+
+
+
+    public  void downloadfiles(Context context, String fileName, String fileExtension, String url) {
+
+        String path = "/MoodyMusics";
+        File directory = getExternalFilesDir("MoodyMusics");
+        String dir=directory.toString();
+        String filePath=dir+path+fileName+".mp3";
+        Log.i("ssss",filePath);
+
+        File file = new File(filePath);
+        if (file.isFile()) {
+
+
+        } else {
+
+            DownloadManager downloadManager = (DownloadManager) context.
+                    getSystemService(Context.DOWNLOAD_SERVICE);
+            Uri uri = Uri.parse(url);
+            DownloadManager.Request request = new DownloadManager.Request(uri);
+
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalFilesDir(context, path, fileName + fileExtension);
+
+            downloadManager.enqueue(request);
+
+        }
+    }
 }

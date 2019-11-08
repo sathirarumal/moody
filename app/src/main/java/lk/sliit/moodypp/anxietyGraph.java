@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.google.cloud.dialogflow.v2beta1.QueryInput;
-import com.google.cloud.dialogflow.v2beta1.TextInput;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +40,7 @@ public class anxietyGraph extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_anxiety_graph);
+        setContentView(R.layout.activity_graph_anx);
 
         //firebase connection
         mAuth = FirebaseAuth.getInstance();
@@ -65,8 +63,8 @@ public class anxietyGraph extends AppCompatActivity {
             }
         });
 
-        chartanxiety=findViewById(R.id.anxietygraph1);
-        TextView textView=(TextView)findViewById(R.id.viewgraph1);
+        chartanxiety=findViewById(R.id.anxietygraph);
+        TextView textView=(TextView)findViewById(R.id.welcomemsg);
         textView.setText(status_anx);
 
         List Xaxisvalues=new ArrayList();

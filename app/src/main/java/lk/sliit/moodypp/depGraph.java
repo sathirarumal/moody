@@ -11,13 +11,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.collection.LLRBNode;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import io.grpc.netty.shaded.io.netty.channel.MaxBytesRecvByteBufAllocator;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
@@ -47,6 +48,7 @@ public class depGraph extends AppCompatActivity {
 
     public ArrayList<Integer> a1; //y
     public ArrayList<String> a2; //x
+    public int totalDp;
 
     //array
     public int[] yAxisData;
@@ -57,7 +59,7 @@ public class depGraph extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_graph_view2);
+        setContentView(R.layout.activity_graph_dep);
 
         lineChartView = findViewById(R.id.chart2);
         TextView tv = (TextView) findViewById(R.id.textView4);
@@ -95,8 +97,9 @@ public class depGraph extends AppCompatActivity {
         }
 
         String status1="You don't have depression";
-        String status2="You have depression please follow up to check more";
-        String status3="your depression level is high.please met Doctor";
+        String status2="today You slightly have depression";
+        String status3="My be you have depression";
+        String status4="your depression level is high.please met Doctor";
 
         //firebase connection
         Fde_Database = FirebaseDatabase.getInstance().getReference("DTR");
@@ -105,6 +108,13 @@ public class depGraph extends AppCompatActivity {
         //check with arraylist
         a1=new ArrayList<>();
         a2=new ArrayList<>();
+
+        //get today
+        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        Date date=new Date();
+        String today= dateFormat.format(date);
+
+
 
         F_deChild.addValueEventListener(new ValueEventListener() {
             @Override
@@ -119,15 +129,16 @@ public class depGraph extends AppCompatActivity {
                     a1.add(dpvalue);
                     a2.add(dateVar);
 
-                    Log.i("madu",dateVar+" "+dpvalue);
+                    if(today.equals(dateVar)){
+                        totalDp=dpvalue;
+                    }
+
+                    Log.i("madu",dateVar+" "+totalDp);
                     val= val+1;
 
                     loadGraph();
                 }
-
-
             }
-
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -136,15 +147,17 @@ public class depGraph extends AppCompatActivity {
         });
 
 
-        // Max=pointvalue[100];
-        if (pointvalue[0] > 0 && pointvalue[0] < 30) {
+        if (totalDp < 30) {
             Result.setText(status1);
-        } else if (pointvalue[1] > 30 && pointvalue[1] < 70) {
+        } else if (totalDp < 50) {
             Result.setText(status2);
-        } else if (pointvalue[2] > 70 && pointvalue[2] < 100) {
-            Result.setText(status);
-        } else
-            Result.setText("Hello");
+        } else if (totalDp < 70) {
+            Result.setText(status3);
+        } else if(totalDp < 100){
+            Result.setText(status4);
+        } else {
+            Result.setText(status4);
+        }
 
     }
 
@@ -203,7 +216,7 @@ public class depGraph extends AppCompatActivity {
 
         lineChartView.setLineChartData(data);
         Viewport viewport = new Viewport(lineChartView.getMaximumViewport());
-        viewport.top = 100;
+        viewport.top = 300;
         lineChartView.setMaximumViewport(viewport);
         lineChartView.setCurrentViewport(viewport);
     }

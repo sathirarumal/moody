@@ -20,7 +20,6 @@
         <activity android:name=".download_music" />
         <activity android:name=".anxietyGraph" />
         <activity android:name=".depGraph" />
-        <activity android:name=".audiodownload" />
 
         <activity android:name=".TestingBackDoor"></activity>
         <activity android:name=".MusicListview" />
