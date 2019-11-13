@@ -69,41 +69,25 @@ public class depGraph extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userId=mAuth.getCurrentUser().getUid();
 
+        //firebase connection
         fd=FirebaseDatabase.getInstance();
         users=fd.getReference("Users");
         userdata=users.child(userId);
-
-        userdata.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user userObj=dataSnapshot.getValue(user.class);
-                userName=userObj.getCallName();
-                Log.i("sra",userName);
-                status="Hello "+ userName +" see your Depression Progress result here";
-                tv.setText(status);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
 
         //get name from google account
         if(userName == null) {
             userName = mAuth.getCurrentUser().getDisplayName();
         }
 
+        //connect to firebase to get depression userid
+        Fde_Database = fd.getReference("DTR");
+        F_deChild=Fde_Database.child(userId);
+
+        //user status
         String status1="You don't have depression";
         String status2="today You slightly have depression";
         String status3="My be you have depression";
         String status4="your depression level is high.please met Doctor";
-
-        //firebase connection
-        Fde_Database = FirebaseDatabase.getInstance().getReference("DTR");
-        F_deChild=Fde_Database.child(userId);
 
         //check with arraylist
         a1=new ArrayList<>();
@@ -115,29 +99,17 @@ public class depGraph extends AppCompatActivity {
         String today= dateFormat.format(date);
 
 
-
-        F_deChild.addValueEventListener(new ValueEventListener() {
+        //get data from  Users table in firebase
+        userdata.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                user userObj=dataSnapshot.getValue(user.class);
 
-                for(DataSnapshot ds:dataSnapshot.getChildren()){
+                userName=userObj.getCallName();
+                status="Hello" +userName+ "see your depression level here";
+                tv.setText(status);
 
-                    String dateVar=ds.getKey();
-                    Double dpVar=ds.getValue(Double.class);
-                    int dpvalue=(int)(dpVar*100);
 
-                    a1.add(dpvalue);
-                    a2.add(dateVar);
-
-                    if(today.equals(dateVar)){
-                        totalDp=dpvalue;
-                    }
-
-                    Log.i("madu",dateVar+" "+totalDp);
-                    val= val+1;
-
-                    loadGraph();
-                }
             }
 
             @Override
@@ -145,6 +117,38 @@ public class depGraph extends AppCompatActivity {
 
             }
         });
+
+
+
+        //get data from DTR table in firebase
+        //a1=y,a2=x
+        F_deChild.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+               for(DataSnapshot ds:dataSnapshot.getChildren()){
+
+                   String dpDate=ds.getKey();
+                   Double dpVar=ds.getValue(Double.class);
+                   int dpFvalue=(int)(dpVar*1);
+
+                   if(today.equals(dpDate)){
+                       totalDp=dpFvalue;
+                   }
+                   a1.add(dpFvalue);
+                   a2.add(dpDate);
+
+                   val=val+1;
+                   loadGraph();
+               }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
 
         if (totalDp < 30) {
@@ -161,6 +165,7 @@ public class depGraph extends AppCompatActivity {
 
     }
 
+    //get data to graph
     public void loadGraph(){
         Log.i("sra",""+a2.size());
 
@@ -204,19 +209,19 @@ public class depGraph extends AppCompatActivity {
         Axis axis = new Axis();
         axis.setName("Time Period");
         axis.setValues(axisValues);
-        axis.setTextSize(16);
+        axis.setTextSize(12);
         axis.setTextColor(Color.parseColor("#373A3A"));
         data.setAxisXBottom(axis);
 
         Axis yAxis = new Axis();
         yAxis.setName("Depression Level");
         yAxis.setTextColor(Color.parseColor("#373A3A"));
-        yAxis.setTextSize(16);
+        yAxis.setTextSize(12);
         data.setAxisYLeft(yAxis);
 
         lineChartView.setLineChartData(data);
         Viewport viewport = new Viewport(lineChartView.getMaximumViewport());
-        viewport.top = 300;
+        viewport.top = 120;
         lineChartView.setMaximumViewport(viewport);
         lineChartView.setCurrentViewport(viewport);
     }

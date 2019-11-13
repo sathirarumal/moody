@@ -64,7 +64,7 @@ public class musicplayer extends AppCompatActivity {
 
         if (myMediaplayer != null) {
             myMediaplayer.stop();
-            ;
+
             myMediaplayer.release();
         }
         Intent i = getIntent();

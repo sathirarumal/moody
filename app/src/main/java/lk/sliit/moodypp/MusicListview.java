@@ -46,6 +46,8 @@ public class MusicListview extends AppCompatActivity {
     StorageReference ref5;
     StorageReference ref6;
     StorageReference ref7;
+    StorageReference ref8;
+    StorageReference ref9;
 
 
 
@@ -57,6 +59,7 @@ public class MusicListview extends AppCompatActivity {
         mylistviewSong = (ListView)findViewById(R.id.myList);
         runtimepermission();
 
+        //store data in a file
         SharedPreferences sharePref2= PreferenceManager.getDefaultSharedPreferences(this);
         type= sharePref2.getString("userType",null);
 
@@ -89,9 +92,10 @@ public class MusicListview extends AppCompatActivity {
     public ArrayList<File> findSong(File root){
 
         ArrayList<File> arrayList = new ArrayList<File>();
-        File directory = getExternalFilesDir("MoodyMusics");
+        File directory = getExternalFilesDir("MoodyMusics");  //directory of the main file is MoodyMmusic
         File[] files = directory.listFiles();
 
+        // array return not an order(2,3,4,1)- for (File singleFile : files)
         for (File singleFile : files){
             if(singleFile.isDirectory() && !singleFile.isHidden()){
                 arrayList.addAll(findSong(singleFile));
@@ -118,6 +122,8 @@ public class MusicListview extends AppCompatActivity {
         ArrayAdapter<String> myadapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,items);
         mylistviewSong.setAdapter(myadapter);
 
+
+
         mylistviewSong.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
@@ -127,7 +133,7 @@ public class MusicListview extends AppCompatActivity {
 
                 String songName=mylistviewSong.getItemAtPosition(i).toString();
                 startActivity(new Intent(getApplicationContext(),musicplayer.class)
-                        .putExtra("songs",mysongs).putExtra("songname",songName)
+                        .putExtra("songs",mysongs).putExtra("songname",songName)  //attach songs(bundle) to the file
                         .putExtra("pos",i));
 
 
@@ -150,9 +156,64 @@ public class MusicListview extends AppCompatActivity {
         ref=storageReference.child("Anxiety - Background Music.mp3");
         ref2=storageReference.child("Most Emotional Music A Final Sacrifice by Luke Richards.mp3");
         ref3=storageReference.child("SUSPENSEFUL ANXIETY MUSIC.mp3");
+        ref4=storageReference.child("Cafe Del Mar We Can Fly.wmv.mp3");
+        ref5=storageReference.child("DJ Shah - Mellomaniac (Chillout MIx).mp3");
+        ref6=storageReference.child("Enya - (1988) Watermark - 01 Watermark.mp3");
+        ref7=storageReference.child("Marconi Union - Weightless (Official Video).mp3");
+        ref8=storageReference.child("Mozart - Canzonetta Sull'aria.mp3");
+        ref9=storageReference.child("Pure Chill Out - Airstream - Electra.mp3");
 
 
         if(type.equals("depression")){
+
+            //mysong4
+            ref4.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"Cafe Del Mar We Can Fly.wmv",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+            //mysong5
+            ref5.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"DJ Shah - Mellomaniac (Chillout MIx)",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+            //mysong6
+            ref6.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"Enya - (1988) Watermark - 01 Watermark",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+
+
+
+
+
+        }else if(type.equals("anxiety")){
 
             //mysong1
             ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -168,15 +229,22 @@ public class MusicListview extends AppCompatActivity {
                 }
             });
 
-
-
-
-
-
-
-        }else if(type.equals("anxiety")){
-
             //mysong2
+            ref3.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"SUSPENSEFUL ANXIETY MUSIC",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+
+            //mysong3
             ref2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
@@ -196,12 +264,40 @@ public class MusicListview extends AppCompatActivity {
 
         }else if(type.equals("both") || type.equals("don't know") ){
 
-            //mysong3
-            ref3.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            //mysong7
+            ref7.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     String url=uri.toString();
-                    downloadfiles(MusicListview.this,"SUSPENSEFUL ANXIETY MUSIC",".mp3",url);
+                    downloadfiles(MusicListview.this,"Marconi Union - Weightless (Official Video)",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+            //mysong8
+            ref8.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"Mozart - Canzonetta Sull'aria",".mp3",url);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+            //mysong9
+            ref9.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String url=uri.toString();
+                    downloadfiles(MusicListview.this,"Pure Chill Out - Airstream - Electra",".mp3",url);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
