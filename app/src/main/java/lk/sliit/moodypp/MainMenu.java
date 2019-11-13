@@ -87,7 +87,6 @@ public class MainMenu extends AppCompatActivity
     fdqSession fdqSessionObj;
     aqSession aqSessionObj;
 
-    private static final String TAG = MainMenu.class.getSimpleName();
     private static final int USER = 10001;
     private static final int BOT = 10002;
 
@@ -290,7 +289,7 @@ public class MainMenu extends AppCompatActivity
             new RequestJavaV2Task(MainMenu.this, session, sessionsClient, queryInput).execute();
         }
 
-    ////////////////////////////////////////////////////sathira get name/////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////Sathira Main menu/////////////////////////////////////////////////////////////////////////////////
 
        userDetailRef=FirebaseDatabase.getInstance().getReference("Users").child(userId);
        userDetailRef.addValueEventListener(new ValueEventListener() {
@@ -307,9 +306,8 @@ public class MainMenu extends AppCompatActivity
         });
 
     }
-    ///////////////////////////////////////////////////////////////// end //////////////////////////////////////////////////////////////////////////////
 
-    @Override
+        @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -399,8 +397,7 @@ public class MainMenu extends AppCompatActivity
 
 
 
-
-    /////////////////////////////////////////////rashini/////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////rashini/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initV2Chatbot() {
         try {
@@ -415,7 +412,8 @@ public class MainMenu extends AppCompatActivity
 
         } catch (Exception e) {
             e.printStackTrace();
-        } }
+        }
+    }
 
     private void userSendMessage(View view) {
         String msg;
@@ -450,7 +448,7 @@ public class MainMenu extends AppCompatActivity
     public void botSendMessage(DetectIntentResponse response) {
         if (response != null) {
             String botReply = response.getQueryResult().getFulfillmentText();
-            Log.d(TAG, "V2 Bot Reply: " + botReply);
+            Log.d("mmsg", "V2 Bot Reply: " + botReply);
 
             if (botReply.equals("")) {
                 showTextView("Sorry i can't understand.", BOT); }
@@ -461,7 +459,7 @@ public class MainMenu extends AppCompatActivity
             }
         }
         else {
-            Log.d(TAG, "Bot Reply: Null");
+            Log.d("mmsg", "Bot Reply: Null");
             showTextView("There was some communication issue. Check your internet connection and please Try again!", BOT);
         }
     }

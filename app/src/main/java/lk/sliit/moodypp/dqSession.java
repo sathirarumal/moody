@@ -6,7 +6,7 @@ public class dqSession {
     private double dq3;
     private double dq4;
     private double dq5;
-    private final double max_value=35;
+    private final double max_value=25;
 
     public void setDq1(double dq1)
     {

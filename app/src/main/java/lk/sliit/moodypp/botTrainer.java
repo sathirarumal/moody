@@ -77,7 +77,7 @@ public double ansPoint(String msg, String state)
         }
         else if(msg.equals("Nearly everyday"))
         {
-            return  8;
+            return  10;
         }
 
         return 0;
@@ -93,7 +93,7 @@ public double ansPoint(String msg, String state)
         }
         else if(msg.equals("Several days"))
         {
-            return  10;
+            return  5;
         }
         else if(msg.equals("More than half of the days"))
         {

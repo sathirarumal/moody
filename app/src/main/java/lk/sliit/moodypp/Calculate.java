@@ -222,7 +222,7 @@ public class Calculate extends AppCompatActivity {
                     if(Mean == null){
                         meanEmotionANXRef.setValue(new MeanEmotionsOfUsers(UserHappy,UserAngry,UserSad,UserNatural,UserFear));
                     }else{
-                        TempmeanAngryInKB=(Mean.getMeanAngryInKB() + UserHappy)/2;
+                        TempmeanAngryInKB=(Mean.getMeanAngryInKB() + UserAngry)/2;
                         TempmeanFearInKB=(Mean.getMeanFearInKB() + UserFear)/2;
                         TempmeanHappyInKB=(Mean.getMeanHappyInKB() + UserHappy)/2;
                         TempmeanNaturalInKB=(Mean.getMeanNaturalInKB() + UserNatural)/2;

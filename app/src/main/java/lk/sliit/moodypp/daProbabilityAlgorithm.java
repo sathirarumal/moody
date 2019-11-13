@@ -28,12 +28,11 @@ public class daProbabilityAlgorithm {
 
     public void applyMultiplicationLow(){
 
-        probaToHaveDisorderWhenHappy =(disoderPerSample*userHappyPerDay)/meanHappyInKB; //p(D/H) =(P(D)*P(H))/p(H/D)
-        probaToHaveDisorderWhenAngry =(disoderPerSample*userAngryPerDay)/meanAngryInKB;
-        probaToHaveDisorderWhenNatural =(disoderPerSample*userNaturalPerDay)/meanNaturalInKB;
-        probaToHaveDisorderWhenSad =(disoderPerSample*userSadPerDay)/meanSadInKB;
-        probaToHaveDisorderWhenFear =(disoderPerSample*userFearPerDay)/meanFearInKB;
-
+        probaToHaveDisorderWhenHappy =(disoderPerSample*meanHappyInKB)/userHappyPerDay; //p(D/H) =(P(D)*P(H))/p(H/D)
+        probaToHaveDisorderWhenAngry =(disoderPerSample*meanAngryInKB)/userAngryPerDay;
+        probaToHaveDisorderWhenNatural =(disoderPerSample*meanNaturalInKB)/userNaturalPerDay;
+        probaToHaveDisorderWhenSad =(disoderPerSample*meanSadInKB)/userSadPerDay;
+        probaToHaveDisorderWhenFear =(disoderPerSample*meanFearInKB)/userFearPerDay;
 
     }
 
